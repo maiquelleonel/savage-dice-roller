@@ -155,29 +155,52 @@ describe("Deck Management Functions", () => {
 
   test("createDeck should initialize a deck with 54 cards (52 + 2 Jokers)", () => {
     expect(deck).toHaveLength(54);
-    expect(deck).toContain("Ace of ♠️");
+    expect(deck.some((c) => c.name === "Ace of ♠️")).toBe(true);
   });
 
   test("shuffleDeck should change the order of cards", () => {
-    const originalDeck = [...deck];
+    const originalNames = deck.map((c) => c.name);
     shuffleDeck();
     expect(deck).toHaveLength(54);
-    // Nota: há uma chance ínfima de o shuffle resultar na mesma ordem,
-    // mas para testes unitários isso é aceitável.
-    expect(deck).not.toEqual(originalDeck);
+    const shuffledNames = deck.map((c) => c.name);
+    expect(shuffledNames).not.toEqual(originalNames);
   });
 
   test("drawCard should remove a card from the deck", () => {
     const initialLength = deck.length;
     const card = drawCard();
-    expect(typeof card).toBe("string");
+    expect(card).toHaveProperty("name");
+    expect(card).toHaveProperty("weight");
     expect(deck).toHaveLength(initialLength - 1);
   });
 
-  test('drawCard should return "No cards left" when the deck is empty', () => {
+  test("drawCard should return 'No cards left' when the deck is empty", () => {
     while (deck.length > 0) {
       drawCard();
     }
     expect(drawCard()).toBe("No cards left");
+  });
+
+  test("Initiative weights should follow Savage Worlds rules", () => {
+    createDeck();
+
+    // Pegamos referências de cartas específicas para comparar pesos
+    const joker = deck.find((c) => c.name.includes("Joker"));
+    const aceSpades = deck.find((c) => c.name === "Ace of ♠️");
+    const aceHearts = deck.find((c) => c.name === "Ace of ♥️");
+    const aceDiamonds = deck.find((c) => c.name === "Ace of ♦️");
+    const aceClubs = deck.find((c) => c.name === "Ace of ♣️");
+    const kingSpades = deck.find((c) => c.name === "King of ♠️");
+    const twoClubs = deck.find((c) => c.name === "2 of ♣️");
+
+    // Validação da hierarquia de Ranks
+    expect(joker.weight).toBeGreaterThan(aceSpades.weight);
+    expect(aceSpades.weight).toBeGreaterThan(kingSpades.weight);
+    expect(kingSpades.weight).toBeGreaterThan(twoClubs.weight);
+
+    // Validação do desempate por Naipes (Savage Worlds Official: Spades > Hearts > Diamonds > Clubs)
+    expect(aceSpades.weight).toBeGreaterThan(aceHearts.weight);
+    expect(aceHearts.weight).toBeGreaterThan(aceDiamonds.weight);
+    expect(aceDiamonds.weight).toBeGreaterThan(aceClubs.weight);
   });
 });

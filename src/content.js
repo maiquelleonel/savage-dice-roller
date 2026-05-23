@@ -118,23 +118,58 @@ function createSavageWorldsUIElement() {
     .querySelector("#draw-card-button")
     .addEventListener("click", () => {
       const card = drawCard();
-      const message =
-        card === "No cards left"
-          ? "No cards left! Please reset the deck."
-          : `Drew: ${card}`;
-      displayMessage(message, "initiative-results");
+      if (card === "No cards left") {
+        displayMessage(
+          "No cards left! Please reset the deck.",
+          "initiative-results",
+        );
+      } else {
+        addInitiativeCard(card);
+      }
     });
 
   savageWorldsUI
     .querySelector("#reset-deck-button")
     .addEventListener("click", () => {
       createDeck();
-      displayMessage("Deck has been reset and shuffled!", "initiative-results");
-      const initResults = document.getElementById("initiative-results");
-      if (initResults) initResults.innerHTML = "";
+      clearInitiative();
+      displayMessage("Deck has been reset and shuffled!", "roll-results");
     });
 
   createDeck();
+}
+
+let activeInitiative = [];
+
+function addInitiativeCard(card) {
+  activeInitiative.push(card);
+  // Ordena decrescente pelo peso (Ace > King ... 2) e (Espada > Copas > Ouro > Paus)
+  activeInitiative.sort((a, b) => b.weight - a.weight);
+  renderInitiative();
+  sendToMeetChat(`Initiative: ${card.name}`);
+}
+
+function clearInitiative() {
+  activeInitiative = [];
+  renderInitiative();
+}
+
+function renderInitiative() {
+  const resultsDiv = document.getElementById("initiative-results");
+  if (!resultsDiv) return;
+
+  resultsDiv.innerHTML = "";
+  activeInitiative.forEach((card, index) => {
+    const resultContainer = document.createElement("div");
+    resultContainer.classList.add("result-item");
+    if (card.name.includes("Joker"))
+      resultContainer.classList.add("joker-highlight");
+
+    const p = document.createElement("p");
+    p.textContent = `${index + 1}. ${card.name}`;
+    resultContainer.appendChild(p);
+    resultsDiv.appendChild(resultContainer);
+  });
 }
 
 function displayMessage(message, targetElementId) {

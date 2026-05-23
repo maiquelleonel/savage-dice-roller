@@ -1,7 +1,7 @@
 // savage-dice-roller/src/core.js
 
 export let deck = [];
-export const suits = ["♣️", "♦️", "♥️", "♠️"];
+export const suits = ["♣️", "♦️", "♥️", "♠️"]; // Paus, Ouro, Copas, Espada
 export const ranks = [
   "2",
   "3",
@@ -18,14 +18,42 @@ export const ranks = [
   "Ace",
 ];
 
+const rankWeights = {
+  2: 2,
+  3: 3,
+  4: 4,
+  5: 5,
+  6: 6,
+  7: 7,
+  8: 8,
+  9: 9,
+  10: 10,
+  Jack: 11,
+  Queen: 12,
+  King: 13,
+  Ace: 14,
+  Joker: 15,
+};
+
+const suitWeights = {
+  "♣️": 0,
+  "♦️": 1,
+  "♥️": 2,
+  "♠️": 3,
+};
+
 export function createDeck() {
   deck = [];
   for (const suit of suits) {
     for (const rank of ranks) {
-      deck.push(`${rank} of ${suit}`);
+      deck.push({
+        name: `${rank} of ${suit}`,
+        weight: rankWeights[rank] * 10 + suitWeights[suit],
+      });
     }
   }
-  deck.push("🃏", "🃏"); // Add two Jokers
+  deck.push({ name: "🃏 Joker", weight: rankWeights["Joker"] * 10 + 4 }); // Peso maior que qualquer Ace
+  deck.push({ name: "🃏 Joker", weight: rankWeights["Joker"] * 10 + 4 });
   shuffleDeck();
 }
 

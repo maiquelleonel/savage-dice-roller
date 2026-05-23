@@ -112,6 +112,15 @@
     border-bottom: none;
 }
 
+.joker-highlight {
+    background-color: #f0ad4e; /* Cor laranja de alerta */
+    color: #333;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 2px 5px;
+    border: 1px solid #eea236;
+}
+
 #clear-results-button {
     width: 100%;
     padding: 8px;
