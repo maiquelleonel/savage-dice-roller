@@ -58,6 +58,7 @@
 .dice-buttons button svg {
     width: 60px;
     height: 60px;
+    pointer-events: none; /* Garante que o clique passe para o botão */
 }
 
 /* Cores baseadas no modelo enviado */

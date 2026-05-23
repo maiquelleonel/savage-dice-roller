@@ -91,7 +91,11 @@ function createSavageWorldsUIElement() {
 
   savageWorldsUI.querySelectorAll(".dice-buttons button").forEach((button) => {
     button.addEventListener("click", (event) => {
-      const dieType = event.target.dataset.die;
+      // Usa closest para garantir que pegamos o botão, mesmo clicando no SVG interno
+      const targetButton = event.target.closest("button");
+      if (!targetButton) return;
+
+      const dieType = targetButton.dataset.die;
       const includeWildDie = includeWildDieCheckbox.checked;
       const rollResult = rollDice(dieType, includeWildDie);
       const message = formatDiceResultMessage(
