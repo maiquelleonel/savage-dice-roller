@@ -21,19 +21,6 @@ Para manter o projeto organizado, seguimos estas diretrizes:
 -   **Agnosticismo:** Tente manter seletores DOM genéricos (como `textarea:last-child`) para manter a compatibilidade universal com outros chats.
 -   **IA Friendly:** Se estiver usando agentes de IA para codar, peça para eles lerem o arquivo `AGENTS.md`.
 
-## 📜 Padrão de Commits
-
-Utilizamos **Conventional Commits**. Seus commits devem seguir este formato:
-
--   `feat:` para novas funcionalidades.
--   `fix:` para correção de bugs.
--   `docs:` para documentação.
--   `style:` para ajustes de formatação ou CSS que não alteram a lógica.
--   `refactor:` para mudanças no código que não corrigem bugs nem adicionam funcionalidades.
--   `test:` para adição ou correção de testes.
-
-Exemplo: `feat: add exploding dice animation`
-
 ## 🧪 Testes e Build
 
 Temos um **Quality Gate** (Git Hook). O commit será bloqueado se os testes falharem.
