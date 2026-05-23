@@ -2,9 +2,9 @@ name: CI Quality Gate
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-and-coverage:
@@ -24,6 +24,12 @@ jobs:
 
       - name: 🚀 Run tests with coverage
         run: bun test --coverage
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
       - name: 📊 Check Coverage Threshold
         # O Bun gera cobertura nativa. Aqui usamos um script simples para garantir os 90%
