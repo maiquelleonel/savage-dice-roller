@@ -61,6 +61,10 @@ function createSavageWorldsUIElement() {
           <label for="include-wild-die">Include Wild Die:</label>
           <input type="checkbox" id="include-wild-die" checked>
       </div>
+      <div class="secret-roll-toggle">
+          <label for="secret-roll">Secret Roll (GM Only):</label>
+          <input type="checkbox" id="secret-roll">
+      </div>
       <div id="roll-results"></div>
       <button id="clear-results-button">Clear Results</button>
 
@@ -68,6 +72,7 @@ function createSavageWorldsUIElement() {
       <div class="initiative-controls">
           <button id="draw-card-button">Draw Card</button>
           <button id="reset-deck-button">Reset Deck</button>
+          <button id="share-initiative-button">Share Order</button>
       </div>
       <div id="initiative-results"></div>
   `;
@@ -136,7 +141,26 @@ function createSavageWorldsUIElement() {
       displayMessage("Deck has been reset and shuffled!", "roll-results");
     });
 
+  savageWorldsUI
+    .querySelector("#share-initiative-button")
+    .addEventListener("click", () => {
+      shareInitiativeToChat();
+    });
+
   createDeck();
+}
+
+function shareInitiativeToChat() {
+  if (activeInitiative.length === 0) return;
+
+  let report = "⚔️ **Current Initiative Order** ⚔️\n";
+  activeInitiative.forEach((card, index) => {
+    const name = card.charName || "???";
+    const jokerPrefix = card.name.includes("Joker") ? "⭐ " : "";
+    report += `${index + 1}. ${jokerPrefix}${name} (${card.name})\n`;
+  });
+
+  sendToMeetChat(report);
 }
 
 let activeInitiative = [];
@@ -161,12 +185,23 @@ function renderInitiative() {
   resultsDiv.innerHTML = "";
   activeInitiative.forEach((card, index) => {
     const resultContainer = document.createElement("div");
-    resultContainer.classList.add("result-item");
+    resultContainer.classList.add("result-item", "initiative-row");
     if (card.name.includes("Joker"))
       resultContainer.classList.add("joker-highlight");
 
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.placeholder = "Character name...";
+    nameInput.value = card.charName || "";
+    nameInput.classList.add("initiative-name-input");
+    nameInput.addEventListener("input", (e) => {
+      card.charName = e.target.value;
+    });
+
     const p = document.createElement("p");
-    p.textContent = `${index + 1}. ${card.name}`;
+    p.textContent = card.name;
+
+    resultContainer.appendChild(nameInput);
     resultContainer.appendChild(p);
     resultsDiv.appendChild(resultContainer);
   });
@@ -187,13 +222,15 @@ function displayMessage(message, targetElementId) {
     resultsDiv.removeChild(resultsDiv.lastChild);
   }
 
-  sendToMeetChat(message);
+  const isSecret = document.getElementById("secret-roll")?.checked;
+  if (!isSecret) {
+    sendToMeetChat(message);
+  }
 }
 
 function sendToMeetChat(message) {
-  const chatInput = document.querySelector(
-    'textarea[placeholder="Send a message"]',
-  );
+  // Seletor agnóstico de idioma sugerido pelo usuário
+  const chatInput = document.querySelector("textarea:last-child");
   if (chatInput) {
     chatInput.value = message;
     chatInput.dispatchEvent(new Event("input", { bubbles: true }));
