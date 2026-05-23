@@ -36,9 +36,8 @@ jobs:
           fail_ci_if_error: true
 
       - name: 📊 Check Coverage Threshold
-        run:
-          bun run test:threshold
-          # Adicione aqui sua lógica de falha se precisar de algo customizado
+        run: bun run test:threshold
+        # Add your failure logic here if you need something customized
 
   security-scan:
     name: 🛡️ Security Scan (CodeQL)
