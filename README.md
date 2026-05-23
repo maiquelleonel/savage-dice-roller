@@ -2,6 +2,7 @@
 
 *Leia este documento em [Português](./README_PT.md).*
 
+[![codecov](https://codecov.io/gh/maiquelleonel/savage-dice-roller/graph/badge.svg?token=Z71CSQRDDG)](https://codecov.io/gh/maiquelleonel/savage-dice-roller)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Build](https://img.shields.io/badge/built%20with-Bun-f9f2f4)
 
