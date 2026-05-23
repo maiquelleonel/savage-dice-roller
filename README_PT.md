@@ -2,7 +2,8 @@
 
 *Leia este documento em [Português](./README_PT.md).*
 
-[![codecov](https://codecov.io/gh/maiquelleonel/savage-dice-roller/graph/badge.svg?token=Z71CSQRDDG)](https://codecov.io/gh/maiquelleonel/savage-dice-roller)
+[![codecov](https://codecov.io/gh/maiquelleonel/savage-dice-roller/graph/badge.svg?token=O44YV78F5O)](https://codecov.io/gh/maiquelleonel/savage-dice-roller)
+[![Buy Me A Coffee](https://img.shields.io/badge/Me%20pague%20um%20caf%C3%A9-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/maiquelleonel)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Build](https://img.shields.io/badge/built%20with-Bun-f9f2f4)
 
@@ -66,4 +67,4 @@ bun test
 - **Software:** Este projeto está sob a licença [MIT](./LICENSE).
 
 ---
-Desenvolvido com ☕ e 🎲 por [Maiquel Leonel](https://github.com/maiquelleonel).
+Desenvolvido com ☕ e 🎲 por [Maiquel Leonel](https://maiquelleonel.com.br).
