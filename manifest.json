@@ -1,25 +1,19 @@
 {
   "manifest_version": 3,
   "name": "Savage Worlds Dice Roller for Google Meet",
-  "version": "1.0",
-  "description": "A dice roller for Savage Worlds RPG integrated into Google Meet.",
+  "version": "1.0.0",
+  "description": "Universal Dice Roller and Initiative Tracker for Savage Worlds RPG.",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": {
       "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
   },
   "background": {
-    "service_worker": "src/background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://meet.google.com/*"],
-      "js": ["src/content.js"],
-      "css": ["src/styles.css"]
-    }
-  ]
+    "service_worker": "dist/background.js"
+  }
 }
