@@ -1,24 +1,28 @@
-# Guia para Agentes de IA
+# AI Agents Guide
 
-Este projeto utiliza uma arquitetura híbrida de Extensão Chrome + Bun. Siga estas diretrizes para evitar perda de contexto e erros de sincronização:
+This project uses a hybrid architecture of Chrome Extension + Bun. Follow these guidelines to avoid context loss and synchronization errors:
 
-## 1. Verificação de Estado antes de Editar
-**Sempre** utilize o comando `read_file` no arquivo alvo antes de qualquer edição (`edit_file`). Não confie no histórico da conversa para o conteúdo exato do arquivo, pois versões podem ter sido sobrescritas ou revertidas.
+## 1. State Verification before Editing
+**Always** use the `read_file` command on the target file before any editing (`edit_file`). Do not trust the conversation history for the exact content of the file, as versions may have been overwritten or reverted.
 
-## 2. Fluxo de Importação/Exportação
-- Lógica de RPG vai no `src/core.js` usando `export`.
-- Interação com Navegador/DOM vai no `src/content.js` usando `import`.
-- **Nunca** use `import` em arquivos que não serão processados pelo Bun (build), pois o Chrome lançará erros de módulo em Content Scripts simples.
+## 2. Import/Export Flow
+- RPG logic goes into `src/core.js` using `export`.
+- Browser/DOM interaction goes into `src/content.js` using `import`.
+- **Never** use `import` in files that will not be processed by Bun (build), as Chrome will throw module errors in simple Content Scripts.
 
-## 3. Processo de Edição Granular
-Para evitar falhas de "text match" em arquivos grandes:
-- Faça edições pequenas e incrementais.
-- Verifique se a indentação e os caracteres especiais (emojis de naipes) no seu `old_text` correspondem exatamente ao que foi lido no passo 1.
+## 3. Granular Editing Process
+To avoid "text match" failures in large files:
+- Make small and incremental edits.
+- Verify that the indentation and special characters (suit emojis) in your `old_text` correspond exactly to what was read in step 1.
 
-## 4. Manutenção dos Testes
-Qualquer alteração em `core.js` **exige** a execução e atualização dos testes em `test/core.test.js` usando `bun test`.
-- Use `spyOn(Math, "random")` do Bun para simular rolagens de dados previsíveis.
-- Lembre-se que o resultado de `rollSingleDie(6)` é `Math.floor(random * 6) + 1`. Calcule seus mocks estáticos baseados nisso.
+## 4. Test Maintenance
+Any change in `core.js` **requires** running and updating tests in `test/core.test.js` using `bun test`.
+- Use Bun's `spyOn(Math, "random")` to simulate predictable dice rolls.
+- Remember that the result of `rollSingleDie(6)` is `Math.floor(random * 6) + 1`. Calculate your static mocks based on this.
 
-## 6. Convenção de Nomes das Cartas
-As cartas devem usar apenas a primeira letra para figuras (A, K, Q, J) e números normais para o resto (ex: "A of ♠️" em vez de "Ace of ♠️"). Os testes em `core.test.js` dependem estritamente desta nomenclatura reduzida.
+## 5. Coding Standards
+- Methods, variables, test names, and comments **must** follow the standard JS `camelCase`.
+- All code identifiers and comments **must** be in English.
+
+## 6. Card Naming Convention
+Cards must use only the first letter for face cards (A, K, Q, J) and normal numbers for the rest (e.g., "A of ♠️" instead of "Ace of ♠️"). The tests in `core.test.js` strictly depend on this reduced nomenclature.
