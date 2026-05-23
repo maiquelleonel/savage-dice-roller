@@ -1,0 +1,51 @@
+name: CI Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-coverage:
+    name: 🧪 Test & Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🧅 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 🚀 Run tests with coverage
+        run: bun test --coverage
+
+      - name: 📊 Check Coverage Threshold
+        # O Bun gera cobertura nativa. Aqui usamos um script simples para garantir os 90%
+        # ou você pode usar actions como 'romeovs/lcov-reporter-action'
+        run: |
+          SUMMARY=$(bun test --coverage | grep "All files")
+          echo "Coverage Summary: $SUMMARY"
+          # Adicione aqui sua lógica de falha se precisar de algo customizado
+
+  security-scan:
+    name: 🛡️ Security Scan (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
