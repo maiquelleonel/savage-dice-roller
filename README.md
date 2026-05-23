@@ -1,66 +1,68 @@
 # Savage Worlds Dice Roller - Chrome Extension
 
+*Leia este documento em [Português](./README_PT.md).*
+
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Build](https://img.shields.io/badge/built%20with-Bun-f9f2f4)
 
-Uma extensão leve e poderosa para jogadores e mestres de **Savage Worlds RPG**. Projetada originalmente para o Google Meet, mas construída com uma arquitetura agnóstica que a torna compatível com quase qualquer chat web.
+A lightweight and powerful extension for **Savage Worlds RPG** players and game masters. Originally designed for Google Meet, but built with an agnostic architecture that makes it compatible with almost any web chat.
 
-## 🚀 Funcionalidades
+## 🚀 Features
 
-- **Mecânica Savage Worlds Real:** Suporte a dados explosivos (Aces) e Wild Die (d6) opcional.
-- **Iniciativa Automática:** Sorteio de cartas com ordenação oficial (Rank + Naipe: ♠️ > ♥️ > ♦️ > ♣️).
-- **Universal Chat Integration:** Detecta automaticamente campos de chat (`textarea:last-child`) e envia os resultados sem necessidade de copiar e colar.
-- **Modo Mestre (Secret Roll):** Realize rolagens privadas que aparecem apenas na sua interface, sem notificar o chat.
-- **Relatório de Iniciativa:** Gere um relatório formatado da ordem de turno para todos os jogadores com um clique.
+- **Real Savage Worlds Mechanics:** Support for exploding dice (Aces) and optional Wild Die (d6).
+- **Automatic Initiative:** Card drawing with official sorting (Rank + Suit: ♠️ > ♥️ > ♦️ > ♣️).
+- **Universal Chat Integration:** Automatically detects chat fields (`textarea:last-child`) and sends results without the need to copy and paste.
+- **Game Master Mode (Secret Roll):** Perform private rolls that appear only in your interface, without notifying the chat.
+- **Initiative Report:** Generate a formatted turn order report for all players with one click.
 
-## 🤝 Contribuição
+## 🤝 Contributing
 
-Contribuições são super bem-vindas! Se você tem uma ideia de melhoria ou encontrou um bug, confira nosso [Guia de Contribuição](./CONTRIBUTING.md).
+Contributions are super welcome! If you have an idea for improvement or found a bug, check out our [Contribution Guide](./CONTRIBUTING.md).
 
-## 🛠️ Arquitetura e Tecnologias
+## 🛠️ Architecture and Technologies
 
-Este projeto foi construído seguindo princípios de **Principal Engineering**, focando em resiliência e baixo acoplamento:
+This project was built following **Principal Engineering** principles, focusing on resilience and low coupling:
 
-- **Bun:** Utilizado como Bundler ultrarrápido e Test Runner.
-- **Híbrido Extension/ESM:** Lógica de negócio isolada em `src/core.js` para testabilidade total via módulos ES.
-- **Injeção Dinâmica:** Background script que injeta recursos sob demanda, otimizando a performance do navegador.
-- **Quality Gate:** Implementação de Git Hooks para garantir que nenhum código quebre os testes unitários antes de um commit.
+- **Bun:** Used as an ultra-fast Bundler and Test Runner.
+- **Extension/ESM Hybrid:** Business logic isolated in `src/core.js` for full testability via ES modules.
+- **Dynamic Injection:** Background script that injects resources on demand, optimizing browser performance.
+- **Quality Gate:** Git Hook implementation to ensure no code breaks unit tests before a commit.
 
-## 📦 Como Instalar (Desenvolvimento)
+## 📦 How to Install (Development)
 
-1. Certifique-se de ter o [Bun](https://bun.sh) instalado.
-2. Clone o repositório.
-3. Instale as dependências:
+1. Make sure you have [Bun](https://bun.sh) installed.
+2. Clone the repository.
+3. Install dependencies:
    ```bash
    bun install
    ```
-4. Gere o build:
+4. Generate the build:
    ```bash
    bun run build
    ```
-5. No Chrome, vá em `chrome://extensions/`.
-6. Ative o "Modo do desenvolvedor".
-7. Clique em "Carregar sem compactação" e selecione a pasta raiz deste projeto.
+5. In Chrome, go to `chrome://extensions/`.
+6. Enable "Developer mode".
+7. Click "Load unpacked" and select the root folder of this project.
 
-## 🧪 Testes
+## 🧪 Tests
 
-A integridade das regras de Savage Worlds é garantida por uma suíte de testes robusta:
+The integrity of Savage Worlds rules is guaranteed by a robust test suite:
 
 ```bash
 bun test
 ```
 
-## 🗺️ Roadmap (Futuro)
+## 🗺️ Roadmap (Future)
 
-- [ ] **Dashboard do Mestre:** Uma área dedicada em aba separada para gestão de cenas.
-- [ ] **Gestão de Extras:** Controle de NPCs e lacaios diretamente pela extensão.
-- [ ] **Ficha do Personagem:** Interface para jogadores preencherem atributos e derivarem rolagens automaticamente.
-- [ ] **Sincronização de Estado:** Persistência de dados entre sessões usando `chrome.storage`.
+- [ ] **GM Dashboard:** A dedicated area in a separate tab for scene management.
+- [ ] **Extras Management:** Control NPCs and minions directly through the extension.
+- [ ] **Character Sheet:** Interface for players to fill in attributes and derive rolls automatically.
+- [ ] **State Synchronization:** Data persistence between sessions using `chrome.storage`.
 
-## 🎨 Créditos e Licença
+## 🎨 Credits and License
 
-- **Dados (SVGs):** Os ícones de dados foram criados por **Skoll** e **Delapouite**, disponíveis em [Game-icons.net](https://game-icons.net/), sob a licença **CC BY 3.0**.
-- **Software:** Este projeto está sob a licença [MIT](./LICENSE).
+- **Dice (SVGs):** Dice icons were created by **Skoll** and **Delapouite**, available at [Game-icons.net](https://game-icons.net/), under the **CC BY 3.0** license.
+- **Software:** This project is under the [MIT](./LICENSE) license.
 
 ---
-Desenvolvido com ☕ e 🎲 por [Maiquel Leonel](https://github.com/maiquelleonel).
+Developed with ☕ and 🎲 by [Maiquel Leonel](https://github.com/maiquelleonel).

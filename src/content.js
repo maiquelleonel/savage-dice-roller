@@ -167,7 +167,7 @@ let activeInitiative = [];
 
 function addInitiativeCard(card) {
   activeInitiative.push(card);
-  // Ordena decrescente pelo peso (Ace > King ... 2) e (Espada > Copas > Ouro > Paus)
+  // Sort descending by weight (Ace > King ... 2) and (Spades > Hearts > Diamonds > Clubs)
   activeInitiative.sort((a, b) => b.weight - a.weight);
   renderInitiative();
   sendToMeetChat(`Initiative: ${card.name}`);
@@ -229,7 +229,7 @@ function displayMessage(message, targetElementId) {
 }
 
 function sendToMeetChat(message) {
-  // Seletor agnóstico de idioma sugerido pelo usuário
+  // Language-agnostic selector suggested by the user
   const chatInput = document.querySelector("textarea:last-child");
   if (chatInput) {
     chatInput.value = message;

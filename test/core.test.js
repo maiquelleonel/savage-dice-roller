@@ -30,19 +30,19 @@ describe("Dice Rolling Functions", () => {
   };
 
   test("rollSingleDie should return a number between 1 and size (inclusive)", () => {
-    // Para obter 4 em d6: Math.random() = 0.5 -> floor(0.5 * 6) + 1 = 3 + 1 = 4
+    // To get 4 on a d6: Math.random() = 0.5 -> floor(0.5 * 6) + 1 = 3 + 1 = 4
     mockMathRandom.mockReturnValue(0.5);
     expect(rollSingleDie(6)).toBe(4);
 
-    // Para obter 6 em d10: Math.random() = 0.5 -> floor(0.5 * 10) + 1 = 5 + 1 = 6
+    // To get 6 on a d10: Math.random() = 0.5 -> floor(0.5 * 10) + 1 = 5 + 1 = 6
     mockMathRandom.mockReturnValue(0.5);
     expect(rollSingleDie(10)).toBe(6);
 
-    // Para obter o valor máximo (6 em d6): Math.random() = 0.99 -> floor(5.94) + 1 = 6
+    // To get the maximum value (6 on a d6): Math.random() = 0.99 -> floor(5.94) + 1 = 6
     mockMathRandom.mockReturnValue(0.99);
     expect(rollSingleDie(6)).toBe(6);
 
-    // Para obter o valor mínimo (1 em d6): Math.random() = 0.01 -> floor(0.06) + 1 = 1
+    // To get the minimum value (1 on a d6): Math.random() = 0.01 -> floor(0.06) + 1 = 1
     mockMathRandom.mockReturnValue(0.01);
     expect(rollSingleDie(6)).toBe(1);
   });
@@ -88,9 +88,9 @@ describe("Dice Rolling Functions", () => {
     });
 
     test("should return highest even if Wild Die explodes and beats Characteristic", () => {
-      // Cenário: d10 tira 8 | Wild tira 6, explode e tira 5 (Total 11)
+      // Scenario: d10 rolls 8 | Wild rolls 6, explodes and rolls 5 (Total 11)
       // d10: (8-1+0.5)/10 = 0.75
-      // Wild 1: (6-1+0.5)/6 = 0.916... (ou use 0.9)
+      // Wild 1: (6-1+0.5)/6 = 0.916... (or use 0.9)
       // Wild 2: (5-1+0.5)/6 = 0.75
       mockRandomSequence([0.75, 0.9, 0.75]);
 
@@ -184,7 +184,7 @@ describe("Deck Management Functions", () => {
   test("Initiative weights should follow Savage Worlds rules", () => {
     createDeck();
 
-    // Pegamos referências de cartas específicas para comparar pesos
+    // Get references to specific cards to compare weights
     const joker = deck.find((c) => c.name.includes("Joker"));
     const aceSpades = deck.find((c) => c.name === "A of ♠️");
     const aceHearts = deck.find((c) => c.name === "A of ♥️");
@@ -193,12 +193,12 @@ describe("Deck Management Functions", () => {
     const kingSpades = deck.find((c) => c.name === "K of ♠️");
     const twoClubs = deck.find((c) => c.name === "2 of ♣️");
 
-    // Validação da hierarquia de Ranks
+    // Rank hierarchy validation
     expect(joker.weight).toBeGreaterThan(aceSpades.weight);
     expect(aceSpades.weight).toBeGreaterThan(kingSpades.weight);
     expect(kingSpades.weight).toBeGreaterThan(twoClubs.weight);
 
-    // Validação do desempate por Naipes (Savage Worlds Official: Spades > Hearts > Diamonds > Clubs)
+    // Suit tie-break validation (Savage Worlds Official: Spades > Hearts > Diamonds > Clubs)
     expect(aceSpades.weight).toBeGreaterThan(aceHearts.weight);
     expect(aceHearts.weight).toBeGreaterThan(aceDiamonds.weight);
     expect(aceDiamonds.weight).toBeGreaterThan(aceClubs.weight);

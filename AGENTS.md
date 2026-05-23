@@ -20,5 +20,5 @@ Qualquer alteração em `core.js` **exige** a execução e atualização dos tes
 - Use `spyOn(Math, "random")` do Bun para simular rolagens de dados previsíveis.
 - Lembre-se que o resultado de `rollSingleDie(6)` é `Math.floor(random * 6) + 1`. Calcule seus mocks estáticos baseados nisso.
 
-## 5. Ciclo de Build
-Sempre que editar o código fonte em `src/`, informe ao usuário que ele deve rodar `bun run build` para atualizar a pasta `dist/` antes de testar no navegador.
+## 6. Convenção de Nomes das Cartas
+As cartas devem usar apenas a primeira letra para figuras (A, K, Q, J) e números normais para o resto (ex: "A of ♠️" em vez de "Ace of ♠️"). Os testes em `core.test.js` dependem estritamente desta nomenclatura reduzida.

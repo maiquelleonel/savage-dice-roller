@@ -1,37 +1,39 @@
 # Contributing to Savage Worlds Dice Roller
 
-Primeiramente, obrigado por se interessar em contribuir! Este projeto visa ser uma ferramenta essencial para mestres e jogadores de Savage Worlds.
+*Leia este documento em [Português](./CONTRIBUTING_PT.md).*
 
-## 🛠️ Desenvolvimento Local
+First of all, thank you for your interest in contributing! This project aims to be an essential tool for Savage Worlds game masters and players.
 
-1.  Faça um **Fork** do repositório.
-2.  Instale o [Bun](https://bun.sh).
-3.  Instale as dependências:
+## 🛠️ Local Development
+
+1.  **Fork** the repository.
+2.  Install [Bun](https://bun.sh).
+3.  Install dependencies:
     ```bash
     bun install
     ```
-4.  Crie uma branch para sua modificação: `git checkout -b feat/minha-nova-feature`.
+4.  Create a branch for your modification: `git checkout -b feat/my-new-feature`.
 
-## 📐 Arquitetura e Regras de Ouro
+## 📐 Architecture and Golden Rules
 
-Para manter o projeto organizado, seguimos estas diretrizes:
+To keep the project organized, we follow these guidelines:
 
--   **Lógica de RPG:** Deve morar em `src/core.js` e ser testada em `test/core.test.js`.
--   **UI e DOM:** Deve morar em `src/content.js`.
--   **Agnosticismo:** Tente manter seletores DOM genéricos (como `textarea:last-child`) para manter a compatibilidade universal com outros chats.
--   **IA Friendly:** Se estiver usando agentes de IA para codar, peça para eles lerem o arquivo `AGENTS.md`.
+-   **RPG Logic:** Must live in `src/core.js` and be tested in `test/core.test.js`.
+-   **UI and DOM:** Must live in `src/content.js`.
+-   **Agnosticism:** Try to keep DOM selectors generic (like `textarea:last-child`) to maintain universal compatibility with other chats.
+-   **AI Friendly:** If using AI agents to code, ask them to read the `AGENTS.md` file.
 
-## 🧪 Testes e Build
+## 🧪 Tests and Build
 
-Temos um **Quality Gate** (Git Hook). O commit será bloqueado se os testes falharem.
--   Rode os testes manualmente: `bun test`
--   Sempre gere o build antes de testar no navegador: `bun run build`
+We have a **Quality Gate** (Git Hook). Commits will be blocked if tests fail.
+-   Run tests manually: `bun test`
+-   Always generate the build before testing in the browser: `bun run build`
 
-## 📬 Enviando seu PR
+## 📬 Submitting your PR
 
-1.  Faça o push para sua branch: `git push origin feat/minha-nova-feature`.
-2.  Abra um **Pull Request** detalhando suas mudanças.
-3.  Aguarde a revisão (prometemos ser rápidos! 🎲).
+1.  Push to your branch: `git push origin feat/my-new-feature`.
+2.  Open a **Pull Request** detailing your changes.
+3.  Wait for review (we promise to be fast! 🎲).
 
 ---
-**Siga as regras e tenha um bom jogo!** \o/ :hangloose:
+**Follow the rules and have a great game!** \o/ :hangloose:
