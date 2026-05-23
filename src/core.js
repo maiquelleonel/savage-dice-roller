@@ -12,10 +12,10 @@ export const ranks = [
   "8",
   "9",
   "10",
-  "Jack",
-  "Queen",
-  "King",
-  "Ace",
+  "J",
+  "Q",
+  "K",
+  "A",
 ];
 
 const rankWeights = {
@@ -28,10 +28,10 @@ const rankWeights = {
   8: 8,
   9: 9,
   10: 10,
-  Jack: 11,
-  Queen: 12,
-  King: 13,
-  Ace: 14,
+  J: 11,
+  Q: 12,
+  K: 13,
+  A: 14,
   Joker: 15,
 };
 

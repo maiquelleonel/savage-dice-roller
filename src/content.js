@@ -153,7 +153,7 @@ function createSavageWorldsUIElement() {
 function shareInitiativeToChat() {
   if (activeInitiative.length === 0) return;
 
-  let report = "⚔️ **Current Initiative Order** ⚔️\n";
+  let report = "⚔️ Current Initiative ⚔️\n";
   activeInitiative.forEach((card, index) => {
     const name = card.charName || "???";
     const jokerPrefix = card.name.includes("Joker") ? "⭐ " : "";
