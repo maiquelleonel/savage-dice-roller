@@ -48,38 +48,54 @@ export function rollSingleDie(size) {
 }
 
 export function rollExplodingDie(size) {
-  let total = 0;
-  let roll = 0;
+  let rolls = [];
+  let currentRoll = 0;
   do {
-    roll = rollSingleDie(size);
-    total += roll;
-  } while (roll === size);
-  return total;
+    currentRoll = rollSingleDie(size);
+    rolls.push(currentRoll);
+  } while (currentRoll === size);
+
+  const total = rolls.reduce((a, b) => a + b, 0);
+  return { total, rolls };
 }
 
 export function rollDice(dieType, includeWildDie = true) {
   const dieSize = parseInt(dieType.substring(1));
-  const characteristicRoll = rollExplodingDie(dieSize);
-  let wildDieRoll = 0;
+  const charResult = rollExplodingDie(dieSize);
+  let wildResult = { total: 0, rolls: [] };
 
   if (includeWildDie) {
-    wildDieRoll = rollExplodingDie(6); // Wild Die is always a d6
+    wildResult = rollExplodingDie(6);
   }
 
-  const finalResult = Math.max(characteristicRoll, wildDieRoll);
+  const finalResult = Math.max(charResult.total, wildResult.total);
 
   return {
-    characteristic: characteristicRoll,
-    wild: wildDieRoll,
+    characteristic: charResult,
+    wild: wildResult,
     final: finalResult,
   };
 }
 
 export function formatDiceResultMessage(rollResult, dieType, includeWildDie) {
   const dieSize = parseInt(dieType.substring(1));
+
+  const formatDieGroup = (res, size, label = "") => {
+    let detail = "";
+    if (res.rolls.length > 1) {
+      detail = `${res.total} = (${res.rolls.map((r) => `d${size} ${r}`).join(" + ")})`;
+    } else {
+      detail = `${res.total} (d${size})`;
+    }
+    return label ? `${label}${detail}` : detail;
+  };
+
+  const charPart = formatDieGroup(rollResult.characteristic, dieSize);
+
   if (includeWildDie) {
-    return `${rollResult.final} = (${rollResult.characteristic} || ${rollResult.wild})`;
+    const wildPart = formatDieGroup(rollResult.wild, 6, "W: ");
+    return `${charPart}\n${wildPart}\nFinal: ${rollResult.final}`;
   } else {
-    return `${rollResult.final} (d${dieSize})`;
+    return charPart;
   }
 }
