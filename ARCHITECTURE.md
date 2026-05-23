@@ -1,28 +1,30 @@
-# Arquitetura do Projeto - Savage Worlds Dice Roller
+# Project Architecture - Savage Worlds Dice Roller
 
-## Visão Geral
-Esta é uma extensão do Chrome projetada para integrar funcionalidades de RPG (Savage Worlds) diretamente no navegador, com foco inicial no Google Meet.
+*Leia este documento em [Português](./ARCHITECTURE_PT.md).*
 
-## Estrutura de Diretórios
-- `src/core.js`: Lógica pura de negócio (regras de Savage Worlds, dados, baralho). **Sem dependências de DOM.**
-- `src/content.js`: Camada de UI e Integração. Manipula o DOM da página e se comunica com o `core.js`.
-- `src/background.js`: Gerencia eventos da extensão (clique no ícone) e injeção dinâmica de scripts.
-- `dist/`: Código transpilado e bundleado pelo Bun para consumo do navegador.
-- `test/`: Testes unitários utilizando o runner nativo do Bun (`bun:test`).
+## Overview
+This is a Chrome extension designed to integrate RPG (Savage Worlds) features directly into the browser, with an initial focus on Google Meet.
+
+## Directory Structure
+- `src/core.js`: Pure business logic (Savage Worlds rules, dice, deck). **No DOM dependencies.**
+- `src/content.js`: UI and Integration layer. Manipulates the page DOM and communicates with `core.js`.
+- `src/background.js`: Manages extension events (icon click) and dynamic script injection.
+- `dist/`: Code transpiled and bundled by Bun for browser consumption.
+- `test/`: Unit tests using Bun's native runner (`bun:test`).
 
 ## ADR (Architectural Decision Records)
 
-### ADR 1: Separação de Lógica e UI
-- **Contexto:** Extensões do Chrome têm ambientes de execução restritos (Content Scripts).
-- **Decisão:** Manter a lógica de RPG em um arquivo separado (`core.js`) que usa módulos ES (`export`).
-- **Consequência:** Facilita testes unitários no terminal e mantém a UI desacoplada das regras.
+### ADR 1: Separation of Logic and UI
+- **Context:** Chrome extensions have restricted execution environments (Content Scripts).
+- **Decision:** Keep RPG logic in a separate file (`core.js`) using ES modules (`export`).
+- **Consequence:** Facilitates unit testing in the terminal and keeps the UI decoupled from the rules.
 
-### ADR 2: Uso do Bun como Bundler e Test Runner
-- **Contexto:** O navegador não suporta `import` direto em Content Scripts sem configuração complexa. O Jest tem dificuldades com cobertura em módulos ES nativos sem Babel.
-- **Decisão:** Usar o Bun para fazer o `build` (agrupar dependências em um único arquivo) e usar `bun test` para execução rápida de testes.
-- **Consequência:** Build extremamente rápido e ambiente de teste simplificado.
+### ADR 2: Use of Bun as Bundler and Test Runner
+- **Context:** Browsers do not support direct `import` in Content Scripts without complex configuration. Jest has difficulties with coverage in native ES modules without Babel.
+- **Decision:** Use Bun for the `build` (grouping dependencies into a single file) and use `bun test` for fast test execution.
+- **Consequence:** Extremely fast build and simplified testing environment.
 
-### ADR 3: Injeção Dinâmica via `background.js`
-- **Contexto:** Queremos que a extensão funcione em qualquer página e possa ser ligada/desligada.
-- **Decisão:** Remover o carregamento automático do `manifest.json` e usar `chrome.action.onClicked` para injetar o script apenas quando solicitado.
-- **Consequência:** Melhor performance do navegador e controle total sobre a visibilidade da UI.
+### ADR 3: Dynamic Injection via `background.js`
+- **Context:** We want the extension to work on any page and be able to be toggled on/off.
+- **Decision:** Remove automatic loading from `manifest.json` and use `chrome.action.onClicked` to inject the script only when requested.
+- **Consequence:** Better browser performance and full control over UI visibility.
