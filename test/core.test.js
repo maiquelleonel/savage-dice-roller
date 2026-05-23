@@ -194,7 +194,6 @@ describe("Deck Management Functions", () => {
     const twoClubs = deck.find((c) => c.name === "2 of ♣️");
 
     // Validação da hierarquia de Ranks
-    console.log(joker, aceSpades);
     expect(joker.weight).toBeGreaterThan(aceSpades.weight);
     expect(aceSpades.weight).toBeGreaterThan(kingSpades.weight);
     expect(kingSpades.weight).toBeGreaterThan(twoClubs.weight);

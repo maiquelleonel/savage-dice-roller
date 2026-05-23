@@ -1,7 +1,7 @@
 // savage-dice-roller/src/core.js
 
 export let deck = [];
-export const suits = ["♣️", "♦️", "♥️", "♠️"]; // Paus, Ouro, Copas, Espada
+export const suits = ["♣️", "♦️", "♥️", "♠️"]; // Clubs, Diamonds, Hearts, Spades
 export const ranks = [
   "2",
   "3",
@@ -52,7 +52,7 @@ export function createDeck() {
       });
     }
   }
-  deck.push({ name: "🃏 Joker", weight: rankWeights["Joker"] * 10 + 4 }); // Peso maior que qualquer Ace
+  deck.push({ name: "🃏 Joker", weight: rankWeights["Joker"] * 10 + 4 }); // Weight higher than any Ace
   deck.push({ name: "🃏 Joker", weight: rankWeights["Joker"] * 10 + 4 });
   shuffleDeck();
 }
