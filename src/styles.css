@@ -58,25 +58,24 @@
 .dice-buttons button svg {
     width: 60px;
     height: 60px;
-    pointer-events: none; /* Garante que o clique passe para o botão */
+    pointer-events: none;
 }
 
-/* Cores baseadas no modelo enviado */
 .d4-color {
     color: #2e7d32;
-} /* Verde */
+}
 .d6-color {
     color: #00acc1;
-} /* Ciano */
+}
 .d8-color {
     color: #7e57c2;
-} /* Roxo */
+}
 .d10-color {
     color: #d81b60;
-} /* Rosa/Magenta */
+}
 .d12-color {
     color: #e53935;
-} /* Vermelho */
+}
 
 .dice-buttons button:hover {
     background-color: #777;
@@ -98,7 +97,7 @@
     background-color: #222;
     padding: 8px;
     border-radius: 5px;
-    max-height: 80px; /* Reduzi as rolagens do mestre */
+    max-height: 80px;
     overflow-y: auto;
     font-size: 0.85em;
     margin-bottom: 5px;
@@ -108,13 +107,13 @@
     background-color: #222;
     padding: 10px;
     border-radius: 5px;
-    max-height: 250px; /* Aumentei significativamente para a iniciativa */
+    max-height: 250px;
     overflow-y: auto;
     font-size: 0.9em;
 }
 
 .result-item {
-    padding: 2px 0; /* Mais denso */
+    padding: 2px 0;
     border-bottom: 1px dashed #444;
 }
 
@@ -144,7 +143,7 @@
 }
 
 .joker-highlight {
-    background-color: #f0ad4e; /* Cor laranja de alerta */
+    background-color: #f0ad4e;
     color: #333;
     font-weight: bold;
     border-radius: 4px;
@@ -184,7 +183,7 @@
 }
 
 #share-initiative-button {
-    background-color: #0275d8; /* Azul para ação de compartilhamento */
+    background-color: #0275d8;
 }
 
 #share-initiative-button:hover {
