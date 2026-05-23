@@ -13,6 +13,10 @@ Uma extensão leve e poderosa para jogadores e mestres de **Savage Worlds RPG**.
 - **Modo Mestre (Secret Roll):** Realize rolagens privadas que aparecem apenas na sua interface, sem notificar o chat.
 - **Relatório de Iniciativa:** Gere um relatório formatado da ordem de turno para todos os jogadores com um clique.
 
+## 🤝 Contribuição
+
+Contribuições são super bem-vindas! Se você tem uma ideia de melhoria ou encontrou um bug, confira nosso [Guia de Contribuição](./CONTRIBUTING.md).
+
 ## 🛠️ Arquitetura e Tecnologias
 
 Este projeto foi construído seguindo princípios de **Principal Engineering**, focando em resiliência e baixo acoplamento:
