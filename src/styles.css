@@ -38,16 +38,44 @@
 }
 
 .dice-buttons button {
-    background-color: #555;
-    color: white;
-    border: 1px solid #777;
-    padding: 10px;
-    border-radius: 5px;
+    background: transparent;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    font-size: 0.9em;
-    min-width: 45px;
+    min-width: 40px;
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease-in-out;
 }
+
+.dice-buttons button:hover {
+    background: transparent;
+    transform: scale(1.1);
+}
+
+.dice-buttons button svg {
+    width: 60px;
+    height: 60px;
+}
+
+/* Cores baseadas no modelo enviado */
+.d4-color {
+    color: #2e7d32;
+} /* Verde */
+.d6-color {
+    color: #00acc1;
+} /* Ciano */
+.d8-color {
+    color: #7e57c2;
+} /* Roxo */
+.d10-color {
+    color: #d81b60;
+} /* Rosa/Magenta */
+.d12-color {
+    color: #e53935;
+} /* Vermelho */
 
 .dice-buttons button:hover {
     background-color: #777;
