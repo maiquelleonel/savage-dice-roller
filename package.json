@@ -5,7 +5,7 @@
   "main": "src/content.js",
   "scripts": {
     "test": "bun test --coverage",
-    "test:threshold": "bun test --coverage --coverage-threshold 100",
+    "test:threshold": "bun test --coverage --coverage-threshold=100",
     "build": "bun build ./src/content.js --outdir ./dist --target=browser --sourcemap=inline && bun build ./src/background.js --outdir ./dist --target=browser --sourcemap=inline"
   },
   "keywords": [
