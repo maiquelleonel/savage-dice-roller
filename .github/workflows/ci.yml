@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 🧅 Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -29,18 +29,15 @@ jobs:
         run: bun test --coverage --coverage-reporter=lcov
 
       - name: 📤 Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
           fail_ci_if_error: true
 
       - name: 📊 Check Coverage Threshold
-        # O Bun gera cobertura nativa. Aqui usamos um script simples para garantir os 90%
-        # ou você pode usar actions como 'romeovs/lcov-reporter-action'
-        run: |
-          SUMMARY=$(bun test --coverage | grep "All files")
-          echo "Coverage Summary: $SUMMARY"
+        run:
+          bun run test:threshold
           # Adicione aqui sua lógica de falha se precisar de algo customizado
 
   security-scan:
@@ -50,7 +47,7 @@ jobs:
       security-events: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
