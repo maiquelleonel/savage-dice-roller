@@ -1,0 +1,19 @@
+{
+  "name": "savage-dice-roller",
+  "version": "1.0.0",
+  "description": "A dice roller for Savage Worlds RPG integrated into Google Meet.",
+  "main": "src/content.js",
+  "scripts": {
+    "test": "bun test",
+    "build": "bun build ./src/content.js --outdir ./dist --target=browser --sourcemap=inline && bun build ./src/background.js --outdir ./dist --target=browser --sourcemap=inline"
+  },
+  "keywords": [
+    "savage worlds",
+    "rpg",
+    "google meet",
+    "extension"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

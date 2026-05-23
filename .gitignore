@@ -1,0 +1,17 @@
+# Dependências
+node_modules/
+bun.lockb
+
+# Build
+dist/
+
+# Testes e Cobertura
+coverage/
+.jest/
+
+# Logs e arquivos temporários
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+.env

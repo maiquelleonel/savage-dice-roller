@@ -1,0 +1,160 @@
+#savage-worlds-dice-roller {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10000; /* Ensure it's on top of Meet's UI */
+    width: 200px;
+}
+
+#savage-worlds-dice-roller h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #4caf50;
+    text-align: center;
+}
+
+.dice-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.dice-buttons button {
+    background-color: #555;
+    color: white;
+    border: 1px solid #777;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex: 1 1 auto; /* Allow buttons to grow and shrink */
+    min-width: 60px;
+}
+
+.dice-buttons button:hover {
+    background-color: #777;
+}
+
+#roll-results {
+    background-color: #222;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 0.85em;
+}
+
+#roll-results p {
+    margin: 3px 0;
+    padding-bottom: 3px;
+    border-bottom: 1px dashed #444;
+}
+
+#roll-results p:last-child {
+    border-bottom: none;
+}
+
+#clear-results-button {
+    width: 100%;
+    padding: 8px;
+    background-color: #d9534f; /* A red-ish color for a clear/delete action */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#clear-results-button:hover {
+    background-color: #c9302c;
+}
+
+#savage-worlds-dice-roller h3:last-of-type {
+    margin-top: 20px;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+}
+
+.initiative-controls {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.initiative-controls button {
+    background-color: #5cb85c; /* A green-ish color for initiative actions */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex: 1 1 auto;
+    min-width: 80px;
+}
+
+.initiative-controls button:hover {
+    background-color: #52a052;
+}
+
+#initiative-results {
+    background-color: #222;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 0.85em;
+}
+
+#initiative-results p {
+    margin: 3px 0;
+    padding-bottom: 3px;
+    border-bottom: 1px dashed #444;
+}
+
+#initiative-results p:last-child {
+    border-bottom: none;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 3px;
+    border-bottom: 1px dashed #444;
+    margin-bottom: 3px;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.result-item p {
+    margin: 0; /* Override default p margin */
+    flex-grow: 1;
+}
+
+.copy-to-chat-button {
+    background-color: #007bff; /* A blue color for copy action */
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.75em;
+    margin-left: 5px;
+    flex-shrink: 0;
+}
+
+.copy-to-chat-button:hover {
+    background-color: #0056b3;
+}
