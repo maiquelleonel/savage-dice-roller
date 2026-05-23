@@ -4,9 +4,8 @@
   "version": "1.0",
   "description": "A dice roller for Savage Worlds RPG integrated into Google Meet.",
   "permissions": ["activeTab", "scripting"],
-  "host_permissions": ["https://meet.google.com/*"],
+  "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "src/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
