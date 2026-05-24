@@ -16,6 +16,16 @@ A lightweight and powerful extension for **Savage Worlds RPG** players and game 
 - **Game Master Mode (Secret Roll):** Perform private rolls that appear only in your interface, without notifying the chat.
 - **Initiative Report:** Generate a formatted turn order report for all players with one click.
 
+## 📸 Screenshots
+
+| Dice Roller UI | Initiative Tracker |
+| :---: | :---: |
+| ![Dice UI](media/screenshot_1.png) | ![Initiative](media/screenshot_3.png) |
+
+| Chat Integration | GM Settings |
+| :---: | :---: |
+| ![Chat](media/screenshot_4.png) | ![Settings](media/screenshot_5.png) |
+
 ## 🤝 Contributing
 
 Contributions are super welcome! If you have an idea for improvement or found a bug, check out our [Contribution Guide](./CONTRIBUTING.md).
