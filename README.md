@@ -20,9 +20,9 @@ A lightweight and powerful extension for **Savage Worlds RPG** players and game 
 
 | Dice Roller UI | Initiative Tracker |
 | :---: | :---: |
-| ![Dice UI](media/screenshot_1.png) | ![Initiative](media/screenshot_3.png) |
+| ![Dice UI](media/screenshot_2.png) | ![Initiative](media/screenshot_3.png) |
 
-| Chat Integration | GM Settings |
+| GM Settings | Chat Integration |
 | :---: | :---: |
 | ![Chat](media/screenshot_4.png) | ![Settings](media/screenshot_5.png) |
 

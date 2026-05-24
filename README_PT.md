@@ -20,9 +20,9 @@ Uma extensão leve e poderosa para jogadores e mestres de **Savage Worlds RPG**.
 
 | UI de Dados | Rastreador de Iniciativa |
 | :---: | :---: |
-| ![Dice UI](media/screenshot_1.png) | ![Initiative](media/screenshot_3.png) |
+| ![Dice UI](media/screenshot_2.png) | ![Initiative](media/screenshot_3.png) |
 
-| Integração de Chat | Configurações do Mestre |
+| Configurações do Mestre | Integração de Chat |
 | :---: | :---: |
 | ![Chat](media/screenshot_4.png) | ![Settings](media/screenshot_5.png) |
 
