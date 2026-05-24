@@ -10,14 +10,32 @@ import {
 
 let savageWorldsUI = null;
 let activeInitiative = [];
+let isGM = false;
+
+function checkUserRole() {
+  const isMeet = window.location.hostname === "meet.google.com";
+
+  if (isMeet) {
+    // Google Meet specific: Detect if the user is the host using tooltip text
+    const tooltips = Array.from(
+      document.querySelectorAll('div[role="tooltip"]'),
+    );
+    isGM = tooltips.some((el) =>
+      el.textContent.toLowerCase().includes("control"),
+    );
+  } else {
+    // Non-Meet pages: Default to GM role to maintain universal compatibility
+    isGM = true;
+  }
+}
 
 function toggleSavageWorldsUI() {
+  checkUserRole();
   if (savageWorldsUI) {
     savageWorldsUI.style.display =
       savageWorldsUI.style.display === "none" ? "flex" : "none";
-    if (savageWorldsUI.style.display === "flex") {
-      syncState();
-    }
+    // Update role class in case it changed
+    savageWorldsUI.className = isGM ? "role-gm" : "role-player";
   } else {
     createSavageWorldsUIElement();
     savageWorldsUI.style.display = "flex";
@@ -27,13 +45,13 @@ function toggleSavageWorldsUI() {
 function createSavageWorldsUIElement() {
   if (document.getElementById("savage-worlds-dice-roller")) {
     savageWorldsUI = document.getElementById("savage-worlds-dice-roller");
-  } else {
-    savageWorldsUI = document.createElement("div");
-    savageWorldsUI.id = "savage-worlds-dice-roller";
-    savageWorldsUI.style.display = "none";
-    document.body.appendChild(savageWorldsUI);
+    return;
   }
 
+  savageWorldsUI = document.createElement("div");
+  savageWorldsUI.id = "savage-worlds-dice-roller";
+  savageWorldsUI.className = isGM ? "role-gm" : "role-player";
+  savageWorldsUI.style.display = "none";
   savageWorldsUI.innerHTML = `
       <h3>Savage Worlds Dice</h3>
       <div class="dice-buttons">
@@ -82,8 +100,8 @@ function createSavageWorldsUIElement() {
       </div>
       <div id="initiative-results"></div>
   `;
+  document.body.appendChild(savageWorldsUI);
 
-  // Initialize Wild Die toggle from localStorage
   const includeWildDieCheckbox =
     savageWorldsUI.querySelector("#include-wild-die");
   const storedWildDieState = localStorage.getItem(
@@ -100,9 +118,9 @@ function createSavageWorldsUIElement() {
     );
   });
 
-  // Attach event listeners to buttons
   savageWorldsUI.querySelectorAll(".dice-buttons button").forEach((button) => {
     button.addEventListener("click", (event) => {
+      // Use closest to ensure we get the button even when clicking the internal SVG
       const targetButton = event.target.closest("button");
       if (!targetButton) return;
 
@@ -144,6 +162,7 @@ function createSavageWorldsUIElement() {
     .addEventListener("click", () => {
       createDeck();
       clearInitiative();
+      // No longer displaying message on reset
     });
 
   savageWorldsUI
@@ -152,26 +171,13 @@ function createSavageWorldsUIElement() {
       shareInitiativeToChat();
     });
 
-  syncState();
-}
-
-function syncState() {
-  // Re-sync and render existing initiative state if any
-  const savedInitiative = sessionStorage.getItem(
-    "savageWorlds_activeInitiative",
-  );
-  if (savedInitiative) {
-    activeInitiative = JSON.parse(savedInitiative);
-    renderInitiative();
-  } else {
-    createDeck();
-  }
+  createDeck();
 }
 
 function shareInitiativeToChat() {
   const report = formatInitiativeReport(activeInitiative);
   if (report) {
-    sendToMeetChat(report);
+    sendToMeetChat(report.replace(/([♠♣])\ufe0f/g, "$1"));
   }
 }
 
@@ -182,21 +188,15 @@ function addInitiativeCard(card) {
   renderInitiative();
 
   // Only strip the emoji variation selector from Spades and Clubs for the quick chat message
-  const cardNameSafe = card.name.replace(/([♠♣])\ufe0f/g, "$1");
+  const cardNameSafe = card.name
+    .replace(/([♠♣])\ufe0f/g, "$1")
+    .replace(/\ufe0f/g, "");
   sendToMeetChat(`Initiative: ${cardNameSafe}`);
 }
 
 function clearInitiative() {
   activeInitiative = [];
-  saveInitiative();
   renderInitiative();
-}
-
-function saveInitiative() {
-  sessionStorage.setItem(
-    "savageWorlds_activeInitiative",
-    JSON.stringify(activeInitiative),
-  );
 }
 
 function renderInitiative() {
@@ -211,6 +211,7 @@ function renderInitiative() {
       resultContainer.classList.add("joker-highlight");
 
     const p = document.createElement("p");
+
     // Highlight dark suits (Spades and Clubs) in our UI
     const formattedName = card.name.replace(
       /[♠♣]/g,
@@ -225,11 +226,10 @@ function renderInitiative() {
     nameInput.classList.add("initiative-name-input");
     nameInput.addEventListener("input", (e) => {
       card.charName = e.target.value;
-      saveInitiative();
     });
 
     resultContainer.appendChild(p);
-    resultContainer.appendChild(nameInput);
+    resultContainer.appendChild(nameInput); // Input on the right
     resultsDiv.appendChild(resultContainer);
   });
 }
@@ -256,6 +256,7 @@ function displayMessage(message, targetElementId) {
 }
 
 function sendToMeetChat(message) {
+  // Language-agnostic selector suggested by the user
   const chatInput = document.querySelector("textarea:last-child");
   if (chatInput) {
     chatInput.value = message;
@@ -278,6 +279,7 @@ function sendToMeetChat(message) {
       });
       chatInput.dispatchEvent(enterEvent);
     }
+    console.log("Message sent to chat:", message);
   }
 }
 

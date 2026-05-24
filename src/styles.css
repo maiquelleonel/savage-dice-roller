@@ -199,3 +199,8 @@
 .initiative-controls button:hover {
     background-color: #52a052;
 }
+
+#savage-worlds-dice-roller.role-player .secret-roll-toggle,
+#savage-worlds-dice-roller.role-player #share-initiative-button {
+    display: none !important;
+}
