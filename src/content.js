@@ -189,20 +189,26 @@ function renderInitiative() {
     if (card.name.includes("Joker"))
       resultContainer.classList.add("joker-highlight");
 
+    const p = document.createElement("p");
+
+    // Função para destacar naipes pretos (Espadas e Paus)
+    const formattedName = card.name.replace(
+      /[♠♣]?/g,
+      '<span class="light-suit">$&</span>',
+    );
+    p.innerHTML = `${index + 1}. ${formattedName}`;
+
     const nameInput = document.createElement("input");
     nameInput.type = "text";
-    nameInput.placeholder = "Character name...";
+    nameInput.placeholder = "Name...";
     nameInput.value = card.charName || "";
     nameInput.classList.add("initiative-name-input");
     nameInput.addEventListener("input", (e) => {
       card.charName = e.target.value;
     });
 
-    const p = document.createElement("p");
-    p.textContent = card.name;
-
-    resultContainer.appendChild(nameInput);
     resultContainer.appendChild(p);
+    resultContainer.appendChild(nameInput); // Input na direita
     resultsDiv.appendChild(resultContainer);
   });
 }
