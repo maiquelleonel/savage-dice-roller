@@ -5,14 +5,19 @@ import {
   drawCard,
   rollDice,
   formatDiceResultMessage,
+  formatInitiativeReport,
 } from "./core.js";
 
 let savageWorldsUI = null;
+let activeInitiative = [];
 
 function toggleSavageWorldsUI() {
   if (savageWorldsUI) {
     savageWorldsUI.style.display =
       savageWorldsUI.style.display === "none" ? "flex" : "none";
+    if (savageWorldsUI.style.display === "flex") {
+      syncState();
+    }
   } else {
     createSavageWorldsUIElement();
     savageWorldsUI.style.display = "flex";
@@ -22,12 +27,13 @@ function toggleSavageWorldsUI() {
 function createSavageWorldsUIElement() {
   if (document.getElementById("savage-worlds-dice-roller")) {
     savageWorldsUI = document.getElementById("savage-worlds-dice-roller");
-    return;
+  } else {
+    savageWorldsUI = document.createElement("div");
+    savageWorldsUI.id = "savage-worlds-dice-roller";
+    savageWorldsUI.style.display = "none";
+    document.body.appendChild(savageWorldsUI);
   }
 
-  savageWorldsUI = document.createElement("div");
-  savageWorldsUI.id = "savage-worlds-dice-roller";
-  savageWorldsUI.style.display = "none";
   savageWorldsUI.innerHTML = `
       <h3>Savage Worlds Dice</h3>
       <div class="dice-buttons">
@@ -76,8 +82,8 @@ function createSavageWorldsUIElement() {
       </div>
       <div id="initiative-results"></div>
   `;
-  document.body.appendChild(savageWorldsUI);
 
+  // Initialize Wild Die toggle from localStorage
   const includeWildDieCheckbox =
     savageWorldsUI.querySelector("#include-wild-die");
   const storedWildDieState = localStorage.getItem(
@@ -94,9 +100,9 @@ function createSavageWorldsUIElement() {
     );
   });
 
+  // Attach event listeners to buttons
   savageWorldsUI.querySelectorAll(".dice-buttons button").forEach((button) => {
     button.addEventListener("click", (event) => {
-      // Usa closest para garantir que pegamos o botão, mesmo clicando no SVG interno
       const targetButton = event.target.closest("button");
       if (!targetButton) return;
 
@@ -138,7 +144,6 @@ function createSavageWorldsUIElement() {
     .addEventListener("click", () => {
       createDeck();
       clearInitiative();
-      // No longer displaying message on reset
     });
 
   savageWorldsUI
@@ -147,35 +152,51 @@ function createSavageWorldsUIElement() {
       shareInitiativeToChat();
     });
 
-  createDeck();
+  syncState();
+}
+
+function syncState() {
+  // Re-sync and render existing initiative state if any
+  const savedInitiative = sessionStorage.getItem(
+    "savageWorlds_activeInitiative",
+  );
+  if (savedInitiative) {
+    activeInitiative = JSON.parse(savedInitiative);
+    renderInitiative();
+  } else {
+    createDeck();
+  }
 }
 
 function shareInitiativeToChat() {
-  if (activeInitiative.length === 0) return;
-
-  let report = "⚔️ Current Initiative ⚔️\n";
-  activeInitiative.forEach((card, index) => {
-    const name = card.charName || "???";
-    const jokerPrefix = card.name.includes("Joker") ? "⭐ " : "";
-    report += `${index + 1}. ${jokerPrefix}${name} (${card.name})\n`;
-  });
-
-  sendToMeetChat(report);
+  const report = formatInitiativeReport(activeInitiative);
+  if (report) {
+    sendToMeetChat(report);
+  }
 }
-
-let activeInitiative = [];
 
 function addInitiativeCard(card) {
   activeInitiative.push(card);
   // Sort descending by weight (Ace > King ... 2) and (Spades > Hearts > Diamonds > Clubs)
   activeInitiative.sort((a, b) => b.weight - a.weight);
   renderInitiative();
-  sendToMeetChat(`Initiative: ${card.name}`);
+
+  // Only strip the emoji variation selector from Spades and Clubs for the quick chat message
+  const cardNameSafe = card.name.replace(/([♠♣])\ufe0f/g, "$1");
+  sendToMeetChat(`Initiative: ${cardNameSafe}`);
 }
 
 function clearInitiative() {
   activeInitiative = [];
+  saveInitiative();
   renderInitiative();
+}
+
+function saveInitiative() {
+  sessionStorage.setItem(
+    "savageWorlds_activeInitiative",
+    JSON.stringify(activeInitiative),
+  );
 }
 
 function renderInitiative() {
@@ -190,7 +211,6 @@ function renderInitiative() {
       resultContainer.classList.add("joker-highlight");
 
     const p = document.createElement("p");
-
     // Highlight dark suits (Spades and Clubs) in our UI
     const formattedName = card.name.replace(
       /[♠♣]/g,
@@ -205,10 +225,11 @@ function renderInitiative() {
     nameInput.classList.add("initiative-name-input");
     nameInput.addEventListener("input", (e) => {
       card.charName = e.target.value;
+      saveInitiative();
     });
 
     resultContainer.appendChild(p);
-    resultContainer.appendChild(nameInput); // Input na direita
+    resultContainer.appendChild(nameInput);
     resultsDiv.appendChild(resultContainer);
   });
 }
@@ -235,18 +256,15 @@ function displayMessage(message, targetElementId) {
 }
 
 function sendToMeetChat(message) {
-  // Convert emojis to plain text characters for better chat compatibility (makes them white in dark mode)
-  const safeMessage = message.replace(/\ufe0f/g, "");
-
-  // Language-agnostic selector suggested by the user
   const chatInput = document.querySelector("textarea:last-child");
   if (chatInput) {
-    chatInput.value = safeMessage;
+    chatInput.value = message;
     chatInput.dispatchEvent(new Event("input", { bubbles: true }));
 
-    const sendButton = document.querySelector(
-      'button[aria-label="Send message"]',
-    );
+    const sendButton =
+      document.querySelector('button[aria-label="Send message"]') ||
+      document.querySelector('button[aria-label="Enviar mensagem"]');
+
     if (sendButton) {
       sendButton.click();
     } else {
@@ -260,7 +278,6 @@ function sendToMeetChat(message) {
       });
       chatInput.dispatchEvent(enterEvent);
     }
-    console.log("Message sent to chat:", message);
   }
 }
 

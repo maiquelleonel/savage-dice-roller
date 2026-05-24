@@ -111,7 +111,7 @@ export function formatDiceResultMessage(rollResult, dieType, includeWildDie) {
   const formatDieGroup = (res, size, label = "") => {
     let detail = "";
     if (res.rolls.length > 1) {
-      detail = `${res.total} = (${res.rolls.map((r) => `d${size} ${r}`).join(" + ")})`;
+      detail = `(${res.rolls.map((r) => `d${size} ${r}`).join(" + ")})`;
     } else {
       detail = `${res.total} (d${size})`;
     }
@@ -132,4 +132,18 @@ export function formatDiceResultMessage(rollResult, dieType, includeWildDie) {
   } else {
     return `${charPart}${raiseText}`;
   }
+}
+
+export function formatInitiativeReport(activeInitiative) {
+  if (activeInitiative.length === 0) return "";
+
+  let report = "⚔️ Current Initiative ⚔️\n";
+  activeInitiative.forEach((card, index) => {
+    const name = card.charName || "???";
+    const jokerPrefix = card.name.includes("Joker") ? "⭐ " : "";
+    // Stripping the emoji variation selector from Spades and Clubs for chat compatibility
+    const cardNameSafe = card.name.replace(/([♠♣])\ufe0f/g, "$1");
+    report += `${index + 1}. ${jokerPrefix}${name} (${cardNameSafe})\n`;
+  });
+  return report.trim();
 }

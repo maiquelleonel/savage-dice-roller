@@ -10,6 +10,7 @@ import {
   suits,
   ranks,
   formatDiceResultMessage,
+  formatInitiativeReport,
 } from "../src/core.js";
 
 describe("Dice Rolling Functions", () => {
@@ -123,7 +124,7 @@ describe("Message Formatting Functions", () => {
       final: 14,
     };
     expect(formatDiceResultMessage(rollResult, "d8", true)).toBe(
-      "14 = (d8 8 + d8 6)\nW: 3 (d6)\nFinal: 14 [2 Raises]",
+      "(d8 8 + d8 6)\nW: 3 (d6)\nFinal: 14 [2 Raises]",
     );
   });
 
@@ -156,7 +157,7 @@ describe("Message Formatting Functions", () => {
       final: 11,
     };
     expect(formatDiceResultMessage(rollResult, "d4", true)).toBe(
-      "2 (d4)\nW: 11 = (d6 6 + d6 5)\nFinal: 11 [1 Raise]",
+      "2 (d4)\nW: (d6 6 + d6 5)\nFinal: 11 [1 Raise]",
     );
   });
 
@@ -224,5 +225,23 @@ describe("Deck Management Functions", () => {
     expect(aceSpades.weight).toBeGreaterThan(aceHearts.weight);
     expect(aceHearts.weight).toBeGreaterThan(aceDiamonds.weight);
     expect(aceDiamonds.weight).toBeGreaterThan(aceClubs.weight);
+  });
+});
+
+describe("Initiative Report Functions", () => {
+  test("formatInitiativeReport should format correctly with multiple characters and a Joker", () => {
+    const activeInitiative = [
+      { name: "🃏 Joker", weight: 154, charName: "Val" },
+      { name: "A of ♠️", weight: 143, charName: "Maiquel" },
+      { name: "7 of ♥️", weight: 72, charName: "" },
+    ];
+    const report = formatInitiativeReport(activeInitiative);
+    expect(report).toBe(
+      "⚔️ Current Initiative ⚔️\n1. ⭐ Val (🃏 Joker)\n2. Maiquel (A of ♠)\n3. ??? (7 of ♥️)",
+    );
+  });
+
+  test("formatInitiativeReport should return empty string for empty list", () => {
+    expect(formatInitiativeReport([])).toBe("");
   });
 });
