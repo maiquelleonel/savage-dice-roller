@@ -191,7 +191,7 @@ function renderInitiative() {
 
     const p = document.createElement("p");
 
-    // Function to highlight dark suits (Spades and Clubs)
+    // Highlight dark suits (Spades and Clubs) in our UI
     const formattedName = card.name.replace(
       /[♠♣]/g,
       '<span class="light-suit">$&</span>',
@@ -235,10 +235,13 @@ function displayMessage(message, targetElementId) {
 }
 
 function sendToMeetChat(message) {
+  // Convert emojis to plain text characters for better chat compatibility (makes them white in dark mode)
+  const safeMessage = message.replace(/\ufe0f/g, "");
+
   // Language-agnostic selector suggested by the user
   const chatInput = document.querySelector("textarea:last-child");
   if (chatInput) {
-    chatInput.value = message;
+    chatInput.value = safeMessage;
     chatInput.dispatchEvent(new Event("input", { bubbles: true }));
 
     const sendButton = document.querySelector(

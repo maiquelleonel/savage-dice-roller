@@ -155,7 +155,7 @@ describe("Deck Management Functions", () => {
 
   test("createDeck should initialize a deck with 54 cards (52 + 2 Jokers)", () => {
     expect(deck).toHaveLength(54);
-    expect(deck.some((c) => c.name === "A of ♠")).toBe(true);
+    expect(deck.some((c) => c.name === "A of ♠️")).toBe(true);
   });
 
   test("shuffleDeck should change the order of cards", () => {
@@ -186,12 +186,12 @@ describe("Deck Management Functions", () => {
 
     // Get references to specific cards to compare weights
     const joker = deck.find((c) => c.name.includes("Joker"));
-    const aceSpades = deck.find((c) => c.name === "A of ♠");
-    const aceHearts = deck.find((c) => c.name === "A of ♥");
-    const aceDiamonds = deck.find((c) => c.name === "A of ♦");
-    const aceClubs = deck.find((c) => c.name === "A of ♣");
-    const kingSpades = deck.find((c) => c.name === "K of ♠");
-    const twoClubs = deck.find((c) => c.name === "2 of ♣");
+    const aceSpades = deck.find((c) => c.name === "A of ♠️");
+    const aceHearts = deck.find((c) => c.name === "A of ♥️");
+    const aceDiamonds = deck.find((c) => c.name === "A of ♦️");
+    const aceClubs = deck.find((c) => c.name === "A of ♣️");
+    const kingSpades = deck.find((c) => c.name === "K of ♠️");
+    const twoClubs = deck.find((c) => c.name === "2 of ♣️");
 
     // Rank hierarchy validation
     expect(joker.weight).toBeGreaterThan(aceSpades.weight);
