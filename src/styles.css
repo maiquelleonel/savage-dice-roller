@@ -1,7 +1,7 @@
 #savage-worlds-dice-roller {
     position: fixed;
-    top: 80px; /* Ajuste vertical para não ficar colado no topo do Meet */
-    right: 25px; /* Ajuste fino para alinhar com o chat */
+    top: 55px; /* Ajuste vertical para não ficar colado no topo do Meet */
+    right: 15px; /* Ajuste fino para alinhar com o chat */
     background-color: #333;
     color: white;
     padding: 15px;

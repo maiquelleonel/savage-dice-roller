@@ -138,7 +138,7 @@ function createSavageWorldsUIElement() {
     .addEventListener("click", () => {
       createDeck();
       clearInitiative();
-      displayMessage("Deck has been reset and shuffled!", "roll-results");
+      // No longer displaying message on reset
     });
 
   savageWorldsUI
