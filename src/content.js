@@ -191,9 +191,9 @@ function renderInitiative() {
 
     const p = document.createElement("p");
 
-    // Função para destacar naipes pretos (Espadas e Paus)
+    // Function to highlight dark suits (Spades and Clubs)
     const formattedName = card.name.replace(
-      /[♠♣]?/g,
+      /[♠♣]/g,
       '<span class="light-suit">$&</span>',
     );
     p.innerHTML = `${index + 1}. ${formattedName}`;

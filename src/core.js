@@ -1,7 +1,7 @@
 // savage-dice-roller/src/core.js
 
 export let deck = [];
-export const suits = ["♣️", "♦️", "♥️", "♠️"]; // Clubs, Diamonds, Hearts, Spades
+export const suits = ["♣", "♦", "♥", "♠"]; // Clubs, Diamonds, Hearts, Spades (Plain text versions)
 export const ranks = [
   "2",
   "3",
@@ -36,10 +36,10 @@ const rankWeights = {
 };
 
 const suitWeights = {
-  "♣️": 0,
-  "♦️": 1,
-  "♥️": 2,
-  "♠️": 3,
+  "♣": 0,
+  "♦": 1,
+  "♥": 2,
+  "♠": 3,
 };
 
 export function createDeck() {
