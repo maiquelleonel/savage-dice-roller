@@ -116,14 +116,36 @@ describe("Message Formatting Functions", () => {
     );
   });
 
-  test("formatDiceResultMessage should format correctly with explosions", () => {
+  test("formatDiceResultMessage should format correctly with explosions and raises", () => {
     const rollResult = {
       characteristic: { total: 14, rolls: [8, 6] },
       wild: { total: 3, rolls: [3] },
       final: 14,
     };
     expect(formatDiceResultMessage(rollResult, "d8", true)).toBe(
-      "14 = (d8 8 + d8 6)\nW: 3 (d6)\nFinal: 14",
+      "14 = (d8 8 + d8 6)\nW: 3 (d6)\nFinal: 14 [2 Raises]",
+    );
+  });
+
+  test("formatDiceResultMessage should format correctly with 1 raise", () => {
+    const rollResult = {
+      characteristic: { total: 8, rolls: [8] },
+      wild: { total: 2, rolls: [2] },
+      final: 8,
+    };
+    expect(formatDiceResultMessage(rollResult, "d8", true)).toBe(
+      "8 (d8)\nW: 2 (d6)\nFinal: 8 [1 Raise]",
+    );
+  });
+
+  test("formatDiceResultMessage should format correctly without Wild Die and with raises", () => {
+    const rollResult = {
+      characteristic: { total: 12, rolls: [12] },
+      wild: { total: 0, rolls: [] },
+      final: 12,
+    };
+    expect(formatDiceResultMessage(rollResult, "d12", false)).toBe(
+      "12 (d12) [2 Raises]",
     );
   });
 
@@ -134,7 +156,7 @@ describe("Message Formatting Functions", () => {
       final: 11,
     };
     expect(formatDiceResultMessage(rollResult, "d4", true)).toBe(
-      "2 (d4)\nW: 11 = (d6 6 + d6 5)\nFinal: 11",
+      "2 (d4)\nW: 11 = (d6 6 + d6 5)\nFinal: 11 [1 Raise]",
     );
   });
 

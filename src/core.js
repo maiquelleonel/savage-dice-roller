@@ -120,10 +120,16 @@ export function formatDiceResultMessage(rollResult, dieType, includeWildDie) {
 
   const charPart = formatDieGroup(rollResult.characteristic, dieSize);
 
+  let raiseText = "";
+  if (rollResult.final >= 8) {
+    const raises = Math.floor((rollResult.final - 4) / 4);
+    raiseText = ` [${raises} Raise${raises > 1 ? "s" : ""}]`;
+  }
+
   if (includeWildDie) {
     const wildPart = formatDieGroup(rollResult.wild, 6, "W: ");
-    return `${charPart}\n${wildPart}\nFinal: ${rollResult.final}`;
+    return `${charPart}\n${wildPart}\nFinal: ${rollResult.final}${raiseText}`;
   } else {
-    return charPart;
+    return `${charPart}${raiseText}`;
   }
 }
