@@ -16,5 +16,14 @@
   ],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@google/gemini-cli": "^0.43.0"
+  },
+  "trustedDependencies": [
+    "@github/keytar",
+    "@google/gemini-cli",
+    "node-pty",
+    "@lydell/node-pty"
+  ]
 }

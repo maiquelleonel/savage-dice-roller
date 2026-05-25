@@ -6,6 +6,7 @@ import {
   rollDice,
   formatDiceResultMessage,
   formatInitiativeReport,
+  formatCardName,
 } from "./core.js";
 
 let savageWorldsUI = null;
@@ -175,9 +176,9 @@ function createSavageWorldsUIElement() {
 }
 
 function shareInitiativeToChat() {
-  const report = formatInitiativeReport(activeInitiative);
+  const report = formatInitiativeReport(activeInitiative, false);
   if (report) {
-    sendToMeetChat(report.replace(/([♠♣])\ufe0f/g, "$1"));
+    sendToMeetChat(report);
   }
 }
 
@@ -187,11 +188,11 @@ function addInitiativeCard(card) {
   activeInitiative.sort((a, b) => b.weight - a.weight);
   renderInitiative();
 
-  // Only strip the emoji variation selector from Spades and Clubs for the quick chat message
-  const cardNameSafe = card.name
-    .replace(/([♠♣])\ufe0f/g, "$1")
-    .replace(/\ufe0f/g, "");
-  sendToMeetChat(`Initiative: ${cardNameSafe}`);
+  // Using the centralized formatter for the quick chat message (emoji-free)
+  const cardNameSafe = formatCardName(card, false);
+  const message = `Initiative: ${cardNameSafe}`;
+  console.log("Debug: Tentando enviar via addInitiativeCard:", message);
+  sendToMeetChat(message);
 }
 
 function clearInitiative() {
@@ -286,5 +287,35 @@ function sendToMeetChat(message) {
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "toggleSavageWorldsUI") {
     toggleSavageWorldsUI();
+  }
+});
+
+// User Story 4: Automatically trigger sanitization when text is pasted into chat input
+document.addEventListener("paste", (event) => {
+  const target = event.target;
+  if (target && target.matches("textarea:last-child")) {
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedText = clipboardData.getData("text");
+
+    if (pastedText) {
+      event.preventDefault();
+      const sanitizedText = sanitizeChatMessage(pastedText);
+
+      // Insert sanitized text at cursor position
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      const text = target.value;
+      const before = text.substring(0, start);
+      const after = text.substring(end);
+
+      target.value = before + sanitizedText + after;
+
+      // Update cursor position
+      const newCursorPos = start + sanitizedText.length;
+      target.setSelectionRange(newCursorPos, newCursorPos);
+
+      // Trigger input event to notify the page of the change
+      target.dispatchEvent(new Event("input", { bubbles: true }));
+    }
   }
 });
