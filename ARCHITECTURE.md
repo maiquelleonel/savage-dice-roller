@@ -17,6 +17,11 @@ This is a Chrome extension designed to integrate RPG (Savage Worlds) features di
 
 ## ADR (Architectural Decision Records)
 
+### ADR 4: Normalization Policy
+- **Context:** Chat platforms (like Google Meet) render Unicode differently based on whether characters are "emoji-like" or "plain-text".
+- **Decision:** All chat-bound strings MUST be processed by `core.js`'s `sanitizeChatMessage` to strip variation selectors and convert suit emojis to plain text.
+- **Consequence:** Guaranteed legibility across all platforms, including Dark Mode.
+
 ### ADR 1: Separation of Logic and UI
 - **Context:** Chrome extensions have restricted execution environments (Content Scripts).
 - **Decision:** Keep RPG logic in a separate file (`core.js`) using ES modules (`export`).
