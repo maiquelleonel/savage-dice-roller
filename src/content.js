@@ -6,7 +6,7 @@ import {
   rollDice,
   formatDiceResultMessage,
   formatInitiativeReport,
-  sanitizeChatMessage,
+  formatCardName,
 } from "./core.js";
 
 let savageWorldsUI = null;
@@ -190,7 +190,9 @@ function addInitiativeCard(card) {
 
   // Using the centralized formatter for the quick chat message (emoji-free)
   const cardNameSafe = formatCardName(card, false);
-  sendToMeetChat(`Initiative: ${cardNameSafe}`);
+  const message = `Initiative: ${cardNameSafe}`;
+  console.log("Debug: Tentando enviar via addInitiativeCard:", message);
+  sendToMeetChat(message);
 }
 
 function clearInitiative() {
