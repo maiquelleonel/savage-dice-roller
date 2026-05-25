@@ -11,6 +11,8 @@ import {
   ranks,
   formatDiceResultMessage,
   formatInitiativeReport,
+  sanitizeChatMessage,
+  formatCardName,
 } from "../src/core.js";
 
 describe("Dice Rolling Functions", () => {
@@ -229,6 +231,21 @@ describe("Deck Management Functions", () => {
 });
 
 describe("Initiative Report Functions", () => {
+  test("formatCardName should return formatted card name with emojis by default", () => {
+    const card = { name: "A of ♠️" };
+    expect(formatCardName(card)).toBe("A of ♠️");
+  });
+
+  test("formatCardName should return formatted card name without suit emojis when useEmoji is false", () => {
+    const card = { name: "A of ♠️" };
+    expect(formatCardName(card, false)).toBe("A of ♠");
+  });
+
+  test("formatCardName should return empty string if card or name is missing", () => {
+    expect(formatCardName(null)).toBe("");
+    expect(formatCardName({})).toBe("");
+  });
+
   test("formatInitiativeReport should format correctly with multiple characters and a Joker", () => {
     const activeInitiative = [
       { name: "🃏 Joker", weight: 154, charName: "Val" },
@@ -237,11 +254,67 @@ describe("Initiative Report Functions", () => {
     ];
     const report = formatInitiativeReport(activeInitiative);
     expect(report).toBe(
-      "⚔️ Current Initiative ⚔️\n1. ⭐ Val (🃏 Joker)\n2. Maiquel (A of ♠)\n3. ??? (7 of ♥️)",
+      "⚔️ Current Initiative ⚔️\n1. ⭐ Val (🃏 Joker)\n2. Maiquel (A of ♠️)\n3. ??? (7 of ♥️)",
+    );
+  });
+
+  test("formatInitiativeReport should format correctly without suit emojis when useEmoji is false", () => {
+    const activeInitiative = [
+      { name: "A of ♠️", weight: 143, charName: "Maiquel" },
+    ];
+    const report = formatInitiativeReport(activeInitiative, false);
+    expect(report).toBe(
+      "⚔️ Current Initiative ⚔️\n1. Maiquel (A of ♠)",
     );
   });
 
   test("formatInitiativeReport should return empty string for empty list", () => {
     expect(formatInitiativeReport([])).toBe("");
+  });
+});
+
+describe("Chat Sanitization Functions", () => {
+  test("sanitizeChatMessage should convert suit emojis to plain text", () => {
+    const input = "I roll ♠️, ♣️, ❤️, ♦️";
+    const expected = "I roll ♠, ♣, ♥, ♦";
+    expect(sanitizeChatMessage(input)).toBe(expected);
+  });
+
+  test("sanitizeChatMessage should strip variation selectors", () => {
+    const input = "Standard emoji ⚔️ and suit symbol ♠\ufe0f";
+    const expected = "Standard emoji ⚔ and suit symbol ♠";
+    expect(sanitizeChatMessage(input)).toBe(expected);
+  });
+
+  test("sanitizeChatMessage should preserve non-suit emojis", () => {
+    const input = "Joker 🃏 and Sparkles ✨ and Boom 💥";
+    // ✨ is U+2728, sometimes has \uFE0F. If it doesn't, it stays the same.
+    // 🃏 and 💥 are surrogate pairs, they should stay.
+    const expected = "Joker 🃏 and Sparkles ✨ and Boom 💥";
+    expect(sanitizeChatMessage(input)).toBe(expected);
+  });
+
+  test("sanitizeChatMessage should return original text on error", () => {
+    const input = "some text";
+    // Force an error by passing something that's not a string if it wasn't for the guard
+    // but here I want to test the try-catch.
+    // I'll mock console.error to avoid noise in tests
+    const spy = spyOn(console, "error").mockImplementation(() => {});
+
+    // Since I can't easily mock the internal non-exported functions,
+    // I'll pass a value that will cause an error in .replace (like null, but there's a guard)
+    // Actually, I'll use a temporary hack or just assume the try-catch works if I can't trigger it.
+    // Wait, I can pass an object that throws on toString?
+    const throwingObj = {
+      toString: () => {
+        throw new Error("Test error");
+      },
+    };
+
+    // sanitizeChatMessage(throwingObj) should return throwingObj and log error
+    const result = sanitizeChatMessage(throwingObj);
+    expect(result).toBe(throwingObj);
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 });

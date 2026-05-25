@@ -32,7 +32,7 @@ Contributions are super welcome! If you have an idea for improvement or found a 
 
 ## 🛠️ Architecture and Technologies
 
-This project was built following **Principal Engineering** principles, focusing on resilience and low coupling:
+This project was built following **Principal Engineering** principles and is governed by our [Project Constitution](.specify/memory/constitution.md). We focus on resilience and low coupling:
 
 - **Bun:** Used as an ultra-fast Bundler and Test Runner.
 - **Extension/ESM Hybrid:** Business logic isolated in `src/core.js` for full testability via ES modules.

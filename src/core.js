@@ -134,16 +134,66 @@ export function formatDiceResultMessage(rollResult, dieType, includeWildDie) {
   }
 }
 
-export function formatInitiativeReport(activeInitiative) {
+export function formatInitiativeReport(activeInitiative, useEmoji = true) {
   if (activeInitiative.length === 0) return "";
 
   let report = "⚔️ Current Initiative ⚔️\n";
   activeInitiative.forEach((card, index) => {
     const name = card.charName || "???";
     const jokerPrefix = card.name.includes("Joker") ? "⭐ " : "";
-    // Stripping the emoji variation selector from Spades and Clubs for chat compatibility
-    const cardNameSafe = card.name.replace(/([♠♣])\ufe0f/g, "$1");
-    report += `${index + 1}. ${jokerPrefix}${name} (${cardNameSafe})\n`;
+    // Using the centralized formatter for consistent card naming
+    const cardNameDisplay = formatCardName(card, useEmoji);
+    report += `${index + 1}. ${jokerPrefix}${name} (${cardNameDisplay})\n`;
   });
   return report.trim();
+}
+
+/**
+ * Formats a card name for display, optionally using text symbols instead of emojis.
+ * @param {Object} card - The card object.
+ * @param {boolean} [useEmoji=true] - Whether to use emojis.
+ * @returns {string} The formatted card name.
+ */
+export function formatCardName(card, useEmoji = true) {
+  if (!card || !card.name) return "";
+  return useEmoji ? card.name : sanitizeChatMessage(card.name);
+}
+
+/**
+ * Sanitizes a chat message by converting suit emojis to plain text and stripping variation selectors.
+ * @param {string} text - The text to sanitize.
+ * @returns {string} The sanitized text.
+ */
+export function sanitizeChatMessage(text) {
+  if (!text) return text;
+  try {
+    let sanitized = text;
+    // User Story 1: Convert suit symbols
+    sanitized = convertSuitEmojis(sanitized);
+    // User Story 2: Strip variation selectors
+    sanitized = stripVariationSelectors(sanitized);
+    return sanitized;
+  } catch (error) {
+    console.error("Sanitization error:", error);
+    return text;
+  }
+}
+
+function convertSuitEmojis(text) {
+  const suitMap = {
+    "♠️": "♠",
+    "♣️": "♣",
+    "♥️": "♥",
+    "❤️": "♥",
+    "♦️": "♦",
+  };
+  let result = text;
+  for (const [emoji, symbol] of Object.entries(suitMap)) {
+    result = result.replaceAll(emoji, symbol);
+  }
+  return result;
+}
+
+function stripVariationSelectors(text) {
+  return text.replace(/\ufe0f/g, "");
 }

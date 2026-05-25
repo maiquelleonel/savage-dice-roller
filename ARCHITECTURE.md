@@ -2,6 +2,9 @@
 
 *Leia este documento em [Português](./ARCHITECTURE_PT.md).*
 
+## Governance
+This project is governed by the [Constitution](.specify/memory/constitution.md), which defines the core principles and architectural constraints that must be followed.
+
 ## Overview
 This is a Chrome extension designed to integrate RPG (Savage Worlds) features directly into the browser, with an initial focus on Google Meet.
 
