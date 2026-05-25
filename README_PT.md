@@ -12,7 +12,7 @@ Uma extensão leve e poderosa para jogadores e mestres de **Savage Worlds RPG**.
 
 - **Mecânica Savage Worlds Real:** Suporte a dados explosivos (Aces) e Wild Die (d6) opcional.
 - **Iniciativa Automática:** Sorteio de cartas com ordenação oficial (Rank + Naipe: ♠️ > ♥️ > ♦️ > ♣️).
-- **Universal Chat Integration:** Detecta automaticamente campos de chat (`textarea:last-child`) e envia os resultados sem necessidade de copiar e colar.
+- **Universal Chat Integration:** Detecta automaticamente campos de chat (`textarea:last-child` ou `[contenteditable="true"]:last-child`) e envia os resultados sem necessidade de copiar e colar.
 - **Modo Mestre (Secret Roll):** Realize rolagens privadas que aparecem apenas na sua interface, sem notificar o chat.
 - **Relatório de Iniciativa:** Gere um relatório formatado da ordem de turno para todos os jogadores com um clique.
 

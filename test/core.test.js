@@ -296,25 +296,27 @@ describe("Chat Sanitization Functions", () => {
 
   test("sanitizeChatMessage should return original text on error", () => {
     const input = "some text";
-    // Force an error by passing something that's not a string if it wasn't for the guard
-    // but here I want to test the try-catch.
-    // I'll mock console.error to avoid noise in tests
     const spy = spyOn(console, "error").mockImplementation(() => {});
-
-    // Since I can't easily mock the internal non-exported functions,
-    // I'll pass a value that will cause an error in .replace (like null, but there's a guard)
-    // Actually, I'll use a temporary hack or just assume the try-catch works if I can't trigger it.
-    // Wait, I can pass an object that throws on toString?
     const throwingObj = {
       toString: () => {
         throw new Error("Test error");
       },
     };
-
-    // sanitizeChatMessage(throwingObj) should return throwingObj and log error
     const result = sanitizeChatMessage(throwingObj);
     expect(result).toBe(throwingObj);
     expect(spy).toHaveBeenCalled();
     spy.mockRestore();
+  });
+
+  test("sanitizeChatMessage should handle mixed symbols and variation selectors", () => {
+    const input = "Ace of Spades ♠️ with \ufe0f and Joker 🃏";
+    const expected = "Ace of Spades ♠ with  and Joker 🃏";
+    expect(sanitizeChatMessage(input)).toBe(expected);
+  });
+
+  test("sanitizeChatMessage should handle red heart emoji variation", () => {
+    const input = "Heart ❤️ vs Heart ♥️";
+    const expected = "Heart ♥ vs Heart ♥";
+    expect(sanitizeChatMessage(input)).toBe(expected);
   });
 });

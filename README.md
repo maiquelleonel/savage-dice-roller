@@ -12,7 +12,7 @@ A lightweight and powerful extension for **Savage Worlds RPG** players and game 
 
 - **Real Savage Worlds Mechanics:** Support for exploding dice (Aces) and optional Wild Die (d6).
 - **Automatic Initiative:** Card drawing with official sorting (Rank + Suit: ♠️ > ♥️ > ♦️ > ♣️).
-- **Universal Chat Integration:** Automatically detects chat fields (`textarea:last-child`) and sends results without the need to copy and paste.
+- **Universal Chat Integration:** Automatically detects chat fields (`textarea:last-child` or `[contenteditable="true"]:last-child`) and sends results without the need to copy and paste.
 - **Game Master Mode (Secret Roll):** Perform private rolls that appear only in your interface, without notifying the chat.
 - **Initiative Report:** Generate a formatted turn order report for all players with one click.
 

@@ -9,6 +9,17 @@ import {
   formatCardName,
 } from "./core.js";
 
+const CHAT_INPUT_SELECTOR =
+  'textarea:last-child, [contenteditable="true"]:last-child';
+
+function getChatInput() {
+  return document.querySelector(CHAT_INPUT_SELECTOR);
+}
+
+function isContentEditable(element) {
+  return element && element.contentEditable === "true";
+}
+
 let savageWorldsUI = null;
 let activeInitiative = [];
 let isGM = false;
@@ -257,10 +268,13 @@ function displayMessage(message, targetElementId) {
 }
 
 function sendToMeetChat(message) {
-  // Language-agnostic selector suggested by the user
-  const chatInput = document.querySelector("textarea:last-child");
+  const chatInput = getChatInput();
   if (chatInput) {
-    chatInput.value = message;
+    if (isContentEditable(chatInput)) {
+      chatInput.innerText = message;
+    } else {
+      chatInput.value = message;
+    }
     chatInput.dispatchEvent(new Event("input", { bubbles: true }));
 
     const sendButton =
@@ -293,7 +307,9 @@ chrome.runtime.onMessage.addListener((request) => {
 // User Story 4: Automatically trigger sanitization when text is pasted into chat input
 document.addEventListener("paste", (event) => {
   const target = event.target;
-  if (target && target.matches("textarea:last-child")) {
+  const chatInput = target.closest(CHAT_INPUT_SELECTOR);
+
+  if (chatInput) {
     const clipboardData = event.clipboardData || window.clipboardData;
     const pastedText = clipboardData.getData("text");
 
@@ -301,21 +317,32 @@ document.addEventListener("paste", (event) => {
       event.preventDefault();
       const sanitizedText = sanitizeChatMessage(pastedText);
 
-      // Insert sanitized text at cursor position
-      const start = target.selectionStart;
-      const end = target.selectionEnd;
-      const text = target.value;
-      const before = text.substring(0, start);
-      const after = text.substring(end);
+      if (isContentEditable(chatInput)) {
+        // Insertion logic for contenteditable
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        selection.deleteFromDocument();
+        const range = selection.getRangeAt(0);
+        range.insertNode(document.createTextNode(sanitizedText));
+        // Move cursor to end of inserted text
+        selection.collapseToEnd();
+      } else {
+        // Standard textarea logic
+        const start = chatInput.selectionStart;
+        const end = chatInput.selectionEnd;
+        const text = chatInput.value;
+        const before = text.substring(0, start);
+        const after = text.substring(end);
 
-      target.value = before + sanitizedText + after;
+        chatInput.value = before + sanitizedText + after;
 
-      // Update cursor position
-      const newCursorPos = start + sanitizedText.length;
-      target.setSelectionRange(newCursorPos, newCursorPos);
+        // Update cursor position
+        const newCursorPos = start + sanitizedText.length;
+        chatInput.setSelectionRange(newCursorPos, newCursorPos);
+      }
 
       // Trigger input event to notify the page of the change
-      target.dispatchEvent(new Event("input", { bubbles: true }));
+      chatInput.dispatchEvent(new Event("input", { bubbles: true }));
     }
   }
 });
