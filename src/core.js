@@ -197,3 +197,74 @@ function convertSuitEmojis(text) {
 function stripVariationSelectors(text) {
   return text.replace(/\ufe0f/g, "");
 }
+
+/**
+ * Persists the current deck and drawn cards into chrome.storage.local.
+ * @param {Array<Object>} deckToSave - The remaining deck cards.
+ * @param {Array<Object>} [drawnCards=[]] - The cards that have already been drawn.
+ * @param {Function} [callback] - Optional completion callback.
+ */
+export function saveDeckState(deckToSave, drawnCards = [], callback) {
+  if (typeof chrome !== "undefined" && chrome?.storage?.local?.set) {
+    chrome.storage.local.set(
+      { deck: deckToSave, drawnCards: drawnCards || [] },
+      () => {
+        if (typeof callback === "function") {
+          callback();
+        }
+      },
+    );
+  } else if (typeof callback === "function") {
+    callback();
+  }
+}
+
+/**
+ * Loads the saved deck state and drawn cards from chrome.storage.local.
+ * Falls back to a new deck if storage is empty, invalid, or unavailable.
+ * @param {Function} [callback] - Callback receiving the restored or fallback state.
+ */
+export function loadDeckState(callback) {
+  const applyFallback = () => {
+    createDeck();
+    const fallbackState = { deck, drawnCards: [] };
+    if (typeof callback === "function") {
+      if (callback.length === 2) {
+        callback(fallbackState.deck, fallbackState.drawnCards);
+      } else {
+        callback(fallbackState);
+      }
+    }
+  };
+
+  if (typeof chrome === "undefined" || !chrome?.storage?.local?.get) {
+    applyFallback();
+    return;
+  }
+
+  chrome.storage.local.get(["deck", "drawnCards"], (result) => {
+    if (
+      chrome.runtime?.lastError ||
+      !result ||
+      !Array.isArray(result.deck) ||
+      (result.deck.length === 0 &&
+        (!Array.isArray(result.drawnCards) || result.drawnCards.length === 0))
+    ) {
+      applyFallback();
+      return;
+    }
+
+    deck = result.deck;
+    const drawnCards = Array.isArray(result.drawnCards) ? result.drawnCards : [];
+    const loadedState = { deck, drawnCards };
+
+    if (typeof callback === "function") {
+      if (callback.length === 2) {
+        callback(loadedState.deck, loadedState.drawnCards);
+      } else {
+        callback(loadedState);
+      }
+    }
+  });
+}
+

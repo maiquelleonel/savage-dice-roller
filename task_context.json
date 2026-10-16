@@ -1,0 +1,13 @@
+{
+  "objective": "feat(storage): persist deck state and drawn cards via chrome.storage",
+  "issue_number": 3,
+  "issue_title": "feat(storage): persist deck state and drawn cards via chrome.storage",
+  "issue_body": "## 🎯 Objetivo\nImplementar persistência do baralho e cartas já tiradas entre sessões usando a API do chrome.storage.local.\n\n### 📋 Checklist\n- [ ] Criar função saveDeckState(deck, drawnCards) em src/core.js\n- [ ] Criar função loadDeckState(callback) com fallback para baralho novo\n- [ ] Adicionar testes unitários correspondentes em test/core.test.js usando bun test",
+  "checklist": [
+    "Criar função saveDeckState(deck, drawnCards) em src/core.js",
+    "Criar função loadDeckState(callback) com fallback para baralho novo",
+    "Adicionar testes unitários correspondentes em test/core.test.js usando bun test"
+  ],
+  "sender": "tech-lead",
+  "repo": "maiquelleonel/savage-dice-roller"
+}

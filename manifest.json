@@ -3,7 +3,7 @@
   "name": "Savage Worlds Dice Roller for Google Meet",
   "version": "1.0.0",
   "description": "Universal Dice Roller and Initiative Tracker for Savage Worlds RPG.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": {
