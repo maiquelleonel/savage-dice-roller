@@ -1,0 +1,22 @@
+{
+  "pr_number": 2,
+  "branch": "task/issue-3-featstorage-persist-deck-state-and-drawn",
+  "review_body": "sua instrução para o que precisa ser ajustado",
+  "comments": [
+    {
+      "file": "",
+      "line": null,
+      "diff_hunk": null,
+      "comment": "sua instrução para o que precisa ser ajustado",
+      "user": "maiquelleonel",
+      "is_resolved": false,
+      "is_outdated": false
+    }
+  ],
+  "repo": "maiquelleonel/savage-dice-roller",
+  "head_sha": null,
+  "stealth_mode": true,
+  "author_name": null,
+  "author_email": null,
+  "sender": null
+}

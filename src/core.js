@@ -200,71 +200,89 @@ function stripVariationSelectors(text) {
 
 /**
  * Persists the current deck and drawn cards into chrome.storage.local.
- * @param {Array<Object>} deckToSave - The remaining deck cards.
- * @param {Array<Object>} [drawnCards=[]] - The cards that have already been drawn.
+ * @param {Array<Object>} [deckToSave] - The remaining deck cards (defaults to current deck).
+ * @param {Array<Object>|Function} [drawnCards=[]] - The cards drawn, or callback if drawnCards omitted.
  * @param {Function} [callback] - Optional completion callback.
+ * @returns {Promise<void>}
  */
 export function saveDeckState(deckToSave, drawnCards = [], callback) {
-  if (typeof chrome !== "undefined" && chrome?.storage?.local?.set) {
-    chrome.storage.local.set(
-      { deck: deckToSave, drawnCards: drawnCards || [] },
-      () => {
-        if (typeof callback === "function") {
-          callback();
-        }
-      },
-    );
-  } else if (typeof callback === "function") {
-    callback();
+  const targetDeck = deckToSave !== undefined ? deckToSave : deck;
+  let cards = drawnCards;
+  let cb = callback;
+
+  if (typeof drawnCards === "function") {
+    cb = drawnCards;
+    cards = [];
   }
+
+  return new Promise((resolve) => {
+    const handleDone = () => {
+      if (typeof cb === "function") {
+        cb();
+      }
+      resolve();
+    };
+
+    if (typeof chrome !== "undefined" && chrome?.storage?.local?.set) {
+      chrome.storage.local.set(
+        { deck: targetDeck, drawnCards: cards || [] },
+        () => {
+          handleDone();
+        },
+      );
+    } else {
+      handleDone();
+    }
+  });
 }
 
 /**
  * Loads the saved deck state and drawn cards from chrome.storage.local.
  * Falls back to a new deck if storage is empty, invalid, or unavailable.
  * @param {Function} [callback] - Callback receiving the restored or fallback state.
+ * @returns {Promise<{deck: Array<Object>, drawnCards: Array<Object>}>}
  */
 export function loadDeckState(callback) {
-  const applyFallback = () => {
-    createDeck();
-    const fallbackState = { deck, drawnCards: [] };
-    if (typeof callback === "function") {
-      if (callback.length === 2) {
-        callback(fallbackState.deck, fallbackState.drawnCards);
-      } else {
-        callback(fallbackState);
+  return new Promise((resolve) => {
+    const handleResult = (state) => {
+      if (typeof callback === "function") {
+        if (callback.length === 2) {
+          callback(state.deck, state.drawnCards);
+        } else {
+          callback(state);
+        }
       }
-    }
-  };
+      resolve(state);
+    };
 
-  if (typeof chrome === "undefined" || !chrome?.storage?.local?.get) {
-    applyFallback();
-    return;
-  }
+    const applyFallback = () => {
+      createDeck();
+      const fallbackState = { deck, drawnCards: [] };
+      handleResult(fallbackState);
+    };
 
-  chrome.storage.local.get(["deck", "drawnCards"], (result) => {
-    if (
-      chrome.runtime?.lastError ||
-      !result ||
-      !Array.isArray(result.deck) ||
-      (result.deck.length === 0 &&
-        (!Array.isArray(result.drawnCards) || result.drawnCards.length === 0))
-    ) {
+    if (typeof chrome === "undefined" || !chrome?.storage?.local?.get) {
       applyFallback();
       return;
     }
 
-    deck = result.deck;
-    const drawnCards = Array.isArray(result.drawnCards) ? result.drawnCards : [];
-    const loadedState = { deck, drawnCards };
-
-    if (typeof callback === "function") {
-      if (callback.length === 2) {
-        callback(loadedState.deck, loadedState.drawnCards);
-      } else {
-        callback(loadedState);
+    chrome.storage.local.get(["deck", "drawnCards"], (result) => {
+      if (
+        chrome.runtime?.lastError ||
+        !result ||
+        !Array.isArray(result.deck) ||
+        (result.deck.length === 0 &&
+          (!Array.isArray(result.drawnCards) || result.drawnCards.length === 0))
+      ) {
+        applyFallback();
+        return;
       }
-    }
+
+      deck = result.deck;
+      const drawnCards = Array.isArray(result.drawnCards) ? result.drawnCards : [];
+      const loadedState = { deck, drawnCards };
+      handleResult(loadedState);
+    });
   });
 }
 

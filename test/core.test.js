@@ -400,6 +400,66 @@ describe("Storage Management Functions", () => {
       delete globalThis.chrome;
       expect(() => saveDeckState([])).not.toThrow();
     });
+
+    test("should accept callback as second argument when drawnCards is omitted", () => {
+      let savedData = null;
+      let callbackInvoked = false;
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "5 of ♣️", weight: 50 }];
+      saveDeckState(mockDeck, () => {
+        callbackInvoked = true;
+      });
+
+      expect(savedData).toEqual({
+        deck: mockDeck,
+        drawnCards: [],
+      });
+      expect(callbackInvoked).toBe(true);
+    });
+
+    test("should return a promise that resolves when saved", async () => {
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "4 of ♣️", weight: 40 }];
+      await expect(saveDeckState(mockDeck)).resolves.toBeUndefined();
+    });
+
+    test("should default to current module deck if deckToSave is undefined", () => {
+      let savedData = null;
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      saveDeckState();
+      expect(savedData.deck).toEqual(deck);
+      expect(savedData.drawnCards).toEqual([]);
+    });
   });
 
   describe("loadDeckState", () => {
@@ -596,6 +656,27 @@ describe("Storage Management Functions", () => {
 
       expect(() => loadDeckState()).not.toThrow();
       expect(deck).toEqual(mockDeck);
+    });
+
+    test("should return a promise that resolves with the loaded state", async () => {
+      const mockDeck = [{ name: "9 of ♥️", weight: 92 }];
+      const mockDrawn = [{ name: "8 of ♦️", weight: 81 }];
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: mockDrawn });
+            },
+          },
+        },
+      };
+
+      const state = await loadDeckState();
+      expect(state).toEqual({
+        deck: mockDeck,
+        drawnCards: mockDrawn,
+      });
     });
   });
 });
