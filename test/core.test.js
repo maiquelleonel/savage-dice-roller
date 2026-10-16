@@ -13,6 +13,8 @@ import {
   formatInitiativeReport,
   sanitizeChatMessage,
   formatCardName,
+  saveDeckState,
+  loadDeckState,
 } from "../src/core.js";
 
 describe("Dice Rolling Functions", () => {
@@ -318,3 +320,364 @@ describe("Chat Sanitization Functions", () => {
     spy.mockRestore();
   });
 });
+
+describe("Storage Management Functions", () => {
+  const originalChrome = globalThis.chrome;
+
+  afterEach(() => {
+    if (originalChrome === undefined) {
+      delete globalThis.chrome;
+    } else {
+      globalThis.chrome = originalChrome;
+    }
+  });
+
+  describe("saveDeckState", () => {
+    test("should save deck and drawnCards to chrome.storage.local and invoke callback", () => {
+      let savedData = null;
+      let callbackInvoked = false;
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "A of ♠️", weight: 143 }];
+      const mockDrawn = [{ name: "K of ♥️", weight: 132 }];
+
+      saveDeckState(mockDeck, mockDrawn, () => {
+        callbackInvoked = true;
+      });
+
+      expect(savedData).toEqual({
+        deck: mockDeck,
+        drawnCards: mockDrawn,
+      });
+      expect(callbackInvoked).toBe(true);
+    });
+
+    test("should save with default empty drawnCards and without callback", () => {
+      let savedData = null;
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "2 of ♣️", weight: 20 }];
+      saveDeckState(mockDeck);
+
+      expect(savedData).toEqual({
+        deck: mockDeck,
+        drawnCards: [],
+      });
+    });
+
+    test("should handle missing chrome API gracefully and call callback if provided", () => {
+      delete globalThis.chrome;
+
+      let callbackInvoked = false;
+      saveDeckState([], [], () => {
+        callbackInvoked = true;
+      });
+
+      expect(callbackInvoked).toBe(true);
+    });
+
+    test("should handle missing chrome API gracefully without callback", () => {
+      delete globalThis.chrome;
+      expect(() => saveDeckState([])).not.toThrow();
+    });
+
+    test("should accept callback as second argument when drawnCards is omitted", () => {
+      let savedData = null;
+      let callbackInvoked = false;
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "5 of ♣️", weight: 50 }];
+      saveDeckState(mockDeck, () => {
+        callbackInvoked = true;
+      });
+
+      expect(savedData).toEqual({
+        deck: mockDeck,
+        drawnCards: [],
+      });
+      expect(callbackInvoked).toBe(true);
+    });
+
+    test("should return a promise that resolves when saved", async () => {
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      const mockDeck = [{ name: "4 of ♣️", weight: 40 }];
+      await expect(saveDeckState(mockDeck)).resolves.toBeUndefined();
+    });
+
+    test("should default to current module deck if deckToSave is undefined", () => {
+      let savedData = null;
+      globalThis.chrome = {
+        storage: {
+          local: {
+            set: (data, cb) => {
+              savedData = data;
+              if (cb) cb();
+            },
+          },
+        },
+      };
+
+      saveDeckState();
+      expect(savedData.deck).toEqual(deck);
+      expect(savedData.drawnCards).toEqual([]);
+    });
+  });
+
+  describe("loadDeckState", () => {
+    test("should restore deck and drawnCards when valid state exists in storage", () => {
+      const mockDeck = [{ name: "10 of ♦️", weight: 101 }];
+      const mockDrawn = [{ name: "J of ♠️", weight: 113 }];
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: mockDrawn });
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState).toEqual({
+        deck: mockDeck,
+        drawnCards: mockDrawn,
+      });
+      expect(deck).toEqual(mockDeck);
+    });
+
+    test("should support two-argument callback (deck, drawnCards)", () => {
+      const mockDeck = [{ name: "7 of ♥️", weight: 72 }];
+      const mockDrawn = [{ name: "3 of ♣️", weight: 30 }];
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: mockDrawn });
+            },
+          },
+        },
+      };
+
+      let returnedDeck = null;
+      let returnedDrawn = null;
+      loadDeckState((d, drawn) => {
+        returnedDeck = d;
+        returnedDrawn = drawn;
+      });
+
+      expect(returnedDeck).toEqual(mockDeck);
+      expect(returnedDrawn).toEqual(mockDrawn);
+    });
+
+    test("should handle valid deck when drawnCards is not an array", () => {
+      const mockDeck = [{ name: "Q of ♦️", weight: 121 }];
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: null });
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState.deck).toEqual(mockDeck);
+      expect(loadedState.drawnCards).toEqual([]);
+    });
+
+    test("should fallback to new deck when storage result is empty", () => {
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({});
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState.deck).toHaveLength(54);
+      expect(loadedState.drawnCards).toEqual([]);
+      expect(deck).toHaveLength(54);
+    });
+
+    test("should fallback to new deck when result is null or deck is not an array", () => {
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb(null);
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState.deck).toHaveLength(54);
+      expect(loadedState.drawnCards).toEqual([]);
+    });
+
+    test("should fallback to new deck when chrome.runtime.lastError is set", () => {
+      globalThis.chrome = {
+        runtime: {
+          lastError: new Error("Storage failure"),
+        },
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: [{ name: "A of ♠️", weight: 143 }], drawnCards: [] });
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState.deck).toHaveLength(54);
+      expect(loadedState.drawnCards).toEqual([]);
+    });
+
+    test("should fallback to new deck when both deck and drawnCards are empty", () => {
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: [], drawnCards: [] });
+            },
+          },
+        },
+      };
+
+      let loadedState = null;
+      loadDeckState((state) => {
+        loadedState = state;
+      });
+
+      expect(loadedState.deck).toHaveLength(54);
+      expect(loadedState.drawnCards).toEqual([]);
+    });
+
+    test("should fallback to new deck when chrome API is undefined", () => {
+      delete globalThis.chrome;
+
+      let singleArgState = null;
+      loadDeckState((state) => {
+        singleArgState = state;
+      });
+      expect(singleArgState.deck).toHaveLength(54);
+      expect(singleArgState.drawnCards).toEqual([]);
+
+      let twoArgDeck = null;
+      let twoArgDrawn = null;
+      loadDeckState((d, drawn) => {
+        twoArgDeck = d;
+        twoArgDrawn = drawn;
+      });
+      expect(twoArgDeck).toHaveLength(54);
+      expect(twoArgDrawn).toEqual([]);
+
+      expect(() => loadDeckState()).not.toThrow();
+    });
+
+    test("should execute without callback when valid state is in storage", () => {
+      const mockDeck = [{ name: "K of ♠️", weight: 133 }];
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: [] });
+            },
+          },
+        },
+      };
+
+      expect(() => loadDeckState()).not.toThrow();
+      expect(deck).toEqual(mockDeck);
+    });
+
+    test("should return a promise that resolves with the loaded state", async () => {
+      const mockDeck = [{ name: "9 of ♥️", weight: 92 }];
+      const mockDrawn = [{ name: "8 of ♦️", weight: 81 }];
+
+      globalThis.chrome = {
+        storage: {
+          local: {
+            get: (keys, cb) => {
+              cb({ deck: mockDeck, drawnCards: mockDrawn });
+            },
+          },
+        },
+      };
+
+      const state = await loadDeckState();
+      expect(state).toEqual({
+        deck: mockDeck,
+        drawnCards: mockDrawn,
+      });
+    });
+  });
+});
+

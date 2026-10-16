@@ -9,6 +9,9 @@ dist/
 # Testes e Cobertura
 coverage/
 .jest/
+__pycache__/
+*.pyc
+.pytest_cache/
 
 # Logs e arquivos temporários
 npm-debug.log*
